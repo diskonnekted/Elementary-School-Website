@@ -20,13 +20,38 @@ class Auth {
             return null;
         }
 
-        return [
+        // Get basic user data from session
+        $user_data = [
             'id' => $_SESSION['user_id'] ?? null,
             'username' => $_SESSION['user_username'] ?? null,
             'name' => $_SESSION['user_name'] ?? null,
             'role' => $_SESSION['user_role'] ?? null,
-            'email' => $_SESSION['user_email'] ?? null
+            'email' => $_SESSION['user_email'] ?? null,
+            'last_login' => null
         ];
+
+        // Try to get last_login from database if user_id exists
+        if ($user_data['id']) {
+            try {
+                require_once __DIR__ . '/../config/database.php';
+                $database = new Database();
+                $db = $database->getConnection();
+                
+                $query = "SELECT last_login FROM users WHERE id = ? LIMIT 1";
+                $stmt = $db->prepare($query);
+                $stmt->execute([$user_data['id']]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($result) {
+                    $user_data['last_login'] = $result['last_login'];
+                }
+            } catch (Exception $e) {
+                // If there's an error, just log it and continue with null last_login
+                error_log('Error getting last_login: ' . $e->getMessage());
+            }
+        }
+
+        return $user_data;
     }
 
     public static function getUserRole() {

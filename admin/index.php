@@ -3,6 +3,7 @@ require_once 'includes/auth.php';
 require_once 'config/database.php';
 require_once 'models/User.php';
 require_once 'models/ContactMessage.php';
+require_once 'includes/functions.php';
 
 // Require login
 Auth::requireLogin();
