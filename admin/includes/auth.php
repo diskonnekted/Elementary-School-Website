@@ -209,11 +209,6 @@ class Auth {
     }
 }
 
-// Helper function to sanitize input
-function sanitizeInput($input) {
-    return htmlspecialchars(strip_tags(trim($input)));
-}
-
 // Helper function to check if user has permission for specific action
 function hasPermission($action) {
     $role = Auth::getUserRole();
@@ -232,17 +227,5 @@ function hasPermission($action) {
         default:
             return false;
     }
-}
-
-// Helper function to format time ago
-function timeAgo($datetime) {
-    $time = time() - strtotime($datetime);
-    
-    if ($time < 60) return 'baru saja';
-    if ($time < 3600) return floor($time/60) . ' menit yang lalu';
-    if ($time < 86400) return floor($time/3600) . ' jam yang lalu';
-    if ($time < 2592000) return floor($time/86400) . ' hari yang lalu';
-    if ($time < 31536000) return floor($time/2592000) . ' bulan yang lalu';
-    return floor($time/31536000) . ' tahun yang lalu';
 }
 ?>

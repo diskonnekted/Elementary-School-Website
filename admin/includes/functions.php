@@ -133,8 +133,10 @@ function getCurrentUser() {
 }
 
 // Fungsi untuk sanitize input
-function sanitizeInput($input) {
-    return htmlspecialchars(strip_tags(trim($input)));
+if (!function_exists('sanitizeInput')) {
+    function sanitizeInput($input) {
+        return htmlspecialchars(strip_tags(trim($input)));
+    }
 }
 
 // Fungsi untuk generate CSRF token
@@ -215,15 +217,17 @@ function getAlert() {
 }
 
 // Fungsi untuk time ago
-function timeAgo($datetime) {
-    $time = time() - strtotime($datetime);
-    
-    if ($time < 60) return 'baru saja';
-    if ($time < 3600) return floor($time/60) . ' menit lalu';
-    if ($time < 86400) return floor($time/3600) . ' jam lalu';
-    if ($time < 2592000) return floor($time/86400) . ' hari lalu';
-    if ($time < 31536000) return floor($time/2592000) . ' bulan lalu';
-    
-    return floor($time/31536000) . ' tahun lalu';
+if (!function_exists('timeAgo')) {
+    function timeAgo($datetime) {
+        $time = time() - strtotime($datetime);
+        
+        if ($time < 60) return 'baru saja';
+        if ($time < 3600) return floor($time/60) . ' menit lalu';
+        if ($time < 86400) return floor($time/3600) . ' jam lalu';
+        if ($time < 2592000) return floor($time/86400) . ' hari lalu';
+        if ($time < 31536000) return floor($time/2592000) . ' bulan lalu';
+        
+        return floor($time/31536000) . ' tahun lalu';
+    }
 }
 ?>
