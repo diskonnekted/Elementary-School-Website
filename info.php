@@ -1,7 +1,12 @@
 <?php
 // Include necessary files
+include_once 'includes/settings.php';
 require_once 'admin/includes/functions.php';
 require_once 'admin/models/GeneralInfo.php';
+
+// Get school info
+$school_info = getSchoolInfo();
+$contact_info = getContactInfo();
 
 // Initialize database
 $database = new Database();
@@ -44,7 +49,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informasi Umum - SD Cerdas Ceria</title>
+    <title>Informasi Umum - <?php echo htmlspecialchars($school_info['name']); ?></title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -402,7 +407,7 @@ try {
             <div class="nav-container">
                 <div class="nav-logo">
                     <i class="fas fa-graduation-cap"></i>
-                    <span>SD Cerdas Ceria</span>
+                    <span><?php echo htmlspecialchars($school_info['name']); ?></span>
                 </div>
                 
                 <ul class="nav-menu">
@@ -435,7 +440,7 @@ try {
         <div class="container">
             <div class="page-header-content">
                 <h1>Informasi Umum</h1>
-                <p>Berbagai informasi penting seputar SD Cerdas Ceria dengan nilai-nilai integritas dan transparansi</p>
+                <p>Berbagai informasi penting seputar <?php echo htmlspecialchars($school_info['name']); ?> dengan nilai-nilai integritas dan transparansi</p>
                 <nav class="breadcrumb">
                     <a href="index.php">Beranda</a>
                     <span>/</span>
@@ -732,9 +737,9 @@ try {
                 <div class="footer-section">
                     <div class="footer-logo">
                         <i class="fas fa-graduation-cap"></i>
-                        <span>SD Cerdas Ceria</span>
+                        <span><?php echo htmlspecialchars($school_info['name']); ?></span>
                     </div>
-                    <p>Membentuk generasi cerdas dan berkarakter dengan nilai-nilai integritas untuk masa depan Indonesia yang lebih baik.</p>
+                    <p><?php echo htmlspecialchars($school_info['description'] ?: 'Membentuk generasi cerdas dan berkarakter dengan nilai-nilai integritas untuk masa depan Indonesia yang lebih baik.'); ?></p>
                     <div class="anti-corruption-footer">
                         <p style="font-size: 0.9em; color: #888; margin-top: 15px;">
                             <i class="fas fa-shield-alt" style="color: var(--primary-color);"></i>
@@ -744,7 +749,7 @@ try {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 SD Cerdas Ceria. Semua hak dilindungi undang-undang.</p>
+                <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($school_info['name']); ?>. Semua hak dilindungi undang-undang.</p>
             </div>
         </div>
     </footer>
