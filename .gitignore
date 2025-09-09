@@ -62,3 +62,7 @@ test_*.php
 admin/debug_*.php
 admin/test_*.php
 admin/setup_*.php
+
+# Temporary/development files
+tmp/
+*.tmp
