@@ -1,9 +1,20 @@
+<?php
+// Include necessary files
+include_once 'includes/settings.php';
+
+// Get school info
+$school_info = getSchoolInfo();
+$contact_info = getContactInfo();
+
+// Set page title
+$page_title = "Portal Berita - " . $school_info['name'];
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Berita - SD Cerdas Ceria</title>
+    <title><?php echo htmlspecialchars($page_title); ?></title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -32,23 +43,23 @@
             <div class="nav-container">
                 <div class="nav-logo">
                     <i class="fas fa-graduation-cap text-2xl text-blue-600"></i>
-                    <span class="text-xl font-bold">SD Cerdas Ceria</span>
+                    <span class="text-xl font-bold"><?php echo htmlspecialchars($school_info['name']); ?></span>
                 </div>
                 
                 <ul class="nav-menu">
-                    <li class="nav-item"><a href="index.html" class="nav-link">Beranda</a></li>
-                    <li class="nav-item"><a href="profil.html" class="nav-link">Profil</a></li>
-                    <li class="nav-item"><a href="berita.html" class="nav-link active">Berita</a></li>
-                    <li class="nav-item"><a href="akademik.html" class="nav-link">Akademik</a></li>
+                    <li class="nav-item"><a href="index.php" class="nav-link">Beranda</a></li>
+                    <li class="nav-item"><a href="profil.php" class="nav-link">Profil</a></li>
+                    <li class="nav-item"><a href="berita.php" class="nav-link active">Berita</a></li>
+                    <li class="nav-item"><a href="academic.php" class="nav-link">Akademik</a></li>
                     <li class="nav-item dropdown">
-                        <a href="info.html" class="nav-link dropdown-toggle">Info</a>
+                        <a href="info.php" class="nav-link dropdown-toggle">Info</a>
                         <ul class="dropdown-menu">
-                            <li><a href="info.html">Informasi Umum</a></li>
-                            <li><a href="transparansi.html">Transparansi</a></li>
+                            <li><a href="info.php">Informasi Umum</a></li>
+                            <li><a href="transparansi.php">Transparansi</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a href="inovasi.html" class="nav-link">Inovasi</a></li>
-                    <li class="nav-item"><a href="kontak.html" class="nav-link">Kontak</a></li>
+                    <li class="nav-item"><a href="inovasi.php" class="nav-link">Inovasi</a></li>
+                    <li class="nav-item"><a href="contact.php" class="nav-link">Kontak</a></li>
                 </ul>
                 
                 <div class="hamburger">
@@ -80,7 +91,7 @@
                 Berita <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300">Terkini</span>
             </h1>
             <p class="text-xl md:text-2xl opacity-90 mb-10 max-w-3xl mx-auto">
-                Ikuti perkembangan terbaru dan berbagai pencapaian membanggakan dari SD Cerdas Ceria
+                Ikuti perkembangan terbaru dan berbagai pencapaian membanggakan dari <?php echo htmlspecialchars($school_info['name']); ?>
             </p>
             
             <!-- Quick Stats -->
@@ -286,10 +297,10 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Navigasi</h4>
                     <ul class="space-y-2">
-                        <li><a href="index.html" class="text-gray-300 hover:text-white transition-colors">Beranda</a></li>
-                        <li><a href="profil.html" class="text-gray-300 hover:text-white transition-colors">Profil Sekolah</a></li>
-                        <li><a href="akademik.html" class="text-gray-300 hover:text-white transition-colors">Program Akademik</a></li>
-                        <li><a href="inovasi.html" class="text-gray-300 hover:text-white transition-colors">Inovasi</a></li>
+                        <li><a href="index.php" class="text-gray-300 hover:text-white transition-colors">Beranda</a></li>
+                        <li><a href="profil.php" class="text-gray-300 hover:text-white transition-colors">Profil Sekolah</a></li>
+                        <li><a href="academic.php" class="text-gray-300 hover:text-white transition-colors">Program Akademik</a></li>
+                        <li><a href="inovasi.php" class="text-gray-300 hover:text-white transition-colors">Inovasi</a></li>
                     </ul>
                 </div>
                 <div>
@@ -311,7 +322,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-12 pt-8 text-center">
-                <p class="text-gray-400">&copy; 2024 SD Cerdas Ceria. All rights reserved. Made with ❤️</p>
+                <p class="text-gray-400">&copy; <?php echo date('Y'); ?> SD Cerdas Ceria. All rights reserved. Made with ❤️</p>
             </div>
         </div>
     </footer>
@@ -738,7 +749,7 @@
             <div class="flex items-center justify-between">
                 <span>Diterbitkan oleh <strong>${news.author_name || 'Admin'}</strong></span>
                 <div class="flex items-center space-x-4">
-                    <button onclick="shareNews('${news.title}', '${window.location.origin}/berita.html')" 
+                    <button onclick="shareNews('${news.title}', '${window.location.origin}/berita.php')" 
                             class="text-blue-600 hover:text-blue-700">
                         <i class="fas fa-share mr-1"></i>Bagikan
                     </button>

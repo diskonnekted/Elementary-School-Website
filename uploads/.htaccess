@@ -1,0 +1,16 @@
+# Security for uploads folder
+# Allow only image and document files
+
+<Files ~ "\.php$">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files ~ "\.(jpg|jpeg|png|gif|pdf|doc|docx)$">
+    Order allow,deny
+    Allow from all
+</Files>
+
+# Prevent execution of scripts
+Options -ExecCGI
+AddHandler cgi-script .php .pl .py .jsp .asp .sh .cgi

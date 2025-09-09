@@ -1,0 +1,28 @@
+# Security for uploads folder
+# Deny direct access to PHP files
+<Files "*.php">
+    Deny from all
+</Files>
+
+# Allow only image files
+<FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
+    Allow from all
+</FilesMatch>
+
+# Set proper content types
+<IfModule mod_mime.c>
+    AddType image/jpeg .jpg .jpeg
+    AddType image/png .png
+    AddType image/gif .gif
+    AddType image/webp .webp
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options nosniff
+    Header set X-Frame-Options DENY
+</IfModule>
+
+# Disable script execution
+Options -ExecCGI -Indexes
+RemoveHandler .php .phtml .php3 .php4 .php5 .phps .py .pl .cgi .shtml

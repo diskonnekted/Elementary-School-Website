@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Academic API - SD Cerdas Ceria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .json-output {
+            background-color: #1f2937;
+            color: #f9fafb;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-6xl mx-auto py-8 px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Test Academic API</h1>
+            
+            <!-- API URL Testing -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">API Endpoints Testing</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="testAPI('list')" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                        Test List Programs
+                    </button>
+                    <button onclick="testAPI('categories')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                        Test Categories
+                    </button>
+                    <button onclick="testAPI('by_grade&grade_level=1')" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
+                        Test By Grade (Kelas 1)
+                    </button>
+                    <button onclick="testAPI('by_curriculum&curriculum_type=nasional')" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded">
+                        Test By Curriculum
+                    </button>
+                    <button onclick="testAPI('detail&id=1')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                        Test Detail (ID=1)
+                    </button>
+                    <button onclick="clearOutput()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+                        Clear Output
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Current API URL -->
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">Current API URL:</h3>
+                <div id="currentURL" class="bg-gray-100 p-2 rounded text-sm font-mono"></div>
+            </div>
+            
+            <!-- API Response -->
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">API Response:</h3>
+                <pre id="apiResponse" class="json-output p-4 rounded-lg">Click a test button to see API response...</pre>
+            </div>
+            
+            <!-- Formatted Display -->
+            <div id="formattedDisplay" class="hidden">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Formatted Display:</h3>
+                <div id="displayContent"></div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        const baseURL = '/sd/api/academic.php';
+        
+        function testAPI(action) {
+            const url = `${baseURL}?action=${action}`;
+            document.getElementById('currentURL').textContent = url;
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Display raw JSON
+                    document.getElementById('apiResponse').textContent = JSON.stringify(data, null, 2);
+                    
+                    // Display formatted content based on action
+                    displayFormatted(action, data);
+                })
+                .catch(error => {
+                    document.getElementById('apiResponse').textContent = `Error: ${error.message}`;
+                    document.getElementById('formattedDisplay').classList.add('hidden');
+                });
+        }
+        
+        function displayFormatted(action, data) {
+            const displayDiv = document.getElementById('displayContent');
+            const formattedDiv = document.getElementById('formattedDisplay');
+            
+            if (!data.success) {
+                displayDiv.innerHTML = `<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">${data.message}</div>`;
+                formattedDiv.classList.remove('hidden');
+                return;
+            }
+            
+            if (action === 'list' || action.includes('by_grade') || action.includes('by_curriculum')) {
+                displayProgramList(data);
+            } else if (action === 'categories') {
+                displayCategories(data);
+            } else if (action.includes('detail')) {
+                displayProgramDetail(data);
+            }
+            
+            formattedDiv.classList.remove('hidden');
+        }
+        
+        function displayProgramList(data) {
+            const displayDiv = document.getElementById('displayContent');
+            let html = '';
+            
+            if (data.pagination) {
+                html += `<div class="mb-4 text-sm text-gray-600">
+                    Total: ${data.pagination.total} programs | 
+                    Page: ${data.pagination.current_page}/${data.pagination.total_pages}
+                </div>`;
+            }
+            
+            if (data.data.length === 0) {
+                html += '<div class="text-gray-500 text-center py-8">No programs found</div>';
+            } else {
+                html += '<div class="grid gap-4">';
+                data.data.forEach(program => {
+                    html += `
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-start">
+                                ${program.image ? 
+                                    `<img src="${program.image}" alt="${program.title}" class="w-16 h-16 object-cover rounded-lg mr-4">` : 
+                                    '<div class="w-16 h-16 bg-gray-200 rounded-lg mr-4 flex items-center justify-center"><span class="text-gray-400 text-xs">No Image</span></div>'
+                                }
+                                <div class="flex-1">
+                                    <h4 class="text-lg font-semibold text-gray-900">${program.title}</h4>
+                                    <p class="text-gray-600 text-sm mt-1">${program.description.length > 150 ? program.description.substring(0, 150) + '...' : program.description}</p>
+                                    <div class="flex space-x-2 mt-2">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            ${program.grade_level_name}
+                                        </span>
+                                        ${program.curriculum_type_name ? 
+                                            `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                ${program.curriculum_type_name}
+                                            </span>` : ''
+                                        }
+                                    </div>
+                                    ${program.subjects.length > 0 ? 
+                                        `<div class="mt-2">
+                                            <span class="text-xs text-gray-500">Mata Pelajaran: </span>
+                                            <span class="text-xs text-gray-700">${program.subjects.join(', ')}</span>
+                                        </div>` : ''
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            displayDiv.innerHTML = html;
+        }
+        
+        function displayCategories(data) {
+            const displayDiv = document.getElementById('displayContent');
+            let html = '<div class="grid md:grid-cols-2 gap-6">';
+            
+            // Grade Levels
+            html += `
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-3">Grade Levels</h4>
+                    <div class="space-y-2">
+            `;
+            data.data.grade_levels.forEach(grade => {
+                html += `
+                    <div class="flex items-center justify-between p-2 bg-blue-50 rounded">
+                        <span class="font-medium">${grade.name}</span>
+                        <span class="text-sm text-gray-600">${grade.value}</span>
+                    </div>
+                `;
+            });
+            html += '</div></div>';
+            
+            // Curriculum Types
+            html += `
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-3">Curriculum Types</h4>
+                    <div class="space-y-2">
+            `;
+            data.data.curriculum_types.forEach(curriculum => {
+                html += `
+                    <div class="flex items-center justify-between p-2 bg-green-50 rounded">
+                        <span class="font-medium">${curriculum.name}</span>
+                        <span class="text-sm text-gray-600">${curriculum.value}</span>
+                    </div>
+                `;
+            });
+            html += '</div></div>';
+            
+            html += '</div>';
+            displayDiv.innerHTML = html;
+        }
+        
+        function displayProgramDetail(data) {
+            const displayDiv = document.getElementById('displayContent');
+            const program = data.data;
+            
+            let html = `
+                <div class="bg-white border border-gray-200 rounded-lg p-6">
+                    <div class="flex items-start mb-6">
+                        ${program.image ? 
+                            `<img src="${program.image}" alt="${program.title}" class="w-32 h-32 object-cover rounded-lg mr-6">` : 
+                            '<div class="w-32 h-32 bg-gray-200 rounded-lg mr-6 flex items-center justify-center"><span class="text-gray-400">No Image</span></div>'
+                        }
+                        <div class="flex-1">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-2">${program.title}</h2>
+                            <div class="flex space-x-2 mb-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                    ${program.grade_level_name}
+                                </span>
+                                ${program.curriculum_type_name ? 
+                                    `<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                        ${program.curriculum_type_name}
+                                    </span>` : ''
+                                }
+                            </div>
+                            <p class="text-gray-700">${program.description}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-6">
+                        ${program.subjects.length > 0 ? `
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">Mata Pelajaran</h4>
+                                <ul class="space-y-1">
+                                    ${program.subjects.map(subject => `<li class="text-gray-600">• ${subject}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                        
+                        ${program.learning_methods.length > 0 ? `
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">Metode Pembelajaran</h4>
+                                <ul class="space-y-1">
+                                    ${program.learning_methods.map(method => `<li class="text-gray-600">• ${method}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                        
+                        ${program.assessment_methods.length > 0 ? `
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">Metode Penilaian</h4>
+                                <ul class="space-y-1">
+                                    ${program.assessment_methods.map(method => `<li class="text-gray-600">• ${method}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="mt-6 pt-6 border-t border-gray-200 text-sm text-gray-500">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>Created: ${new Date(program.created_at).toLocaleDateString()}</div>
+                            ${program.updated_at ? `<div>Updated: ${new Date(program.updated_at).toLocaleDateString()}</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            displayDiv.innerHTML = html;
+        }
+        
+        function clearOutput() {
+            document.getElementById('apiResponse').textContent = 'Click a test button to see API response...';
+            document.getElementById('formattedDisplay').classList.add('hidden');
+            document.getElementById('currentURL').textContent = '';
+        }
+    </script>
+</body>
+</html>
