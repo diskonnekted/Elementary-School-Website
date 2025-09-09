@@ -1,10 +1,15 @@
 <?php
-require_once 'includes/functions.php';
+require_once 'includes/auth.php';
 require_once 'config/database.php';
 require_once 'models/ContactMessage.php';
+require_once 'includes/functions.php';
 
-// Check if user is logged in and is admin using function from functions.php
-requireLogin();
+// Require login and check permissions
+Auth::requireLogin();
+if (!Auth::canManageMessages()) {
+    header('HTTP/1.0 403 Forbidden');
+    die('Access denied. You do not have permission to manage messages.');
+}
 
 // Initialize database and models
 $database = new Database();
@@ -34,6 +39,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'mark_as_read':
             $result = $contactMessage->markAsRead($_POST['id']);
             echo json_encode($result);
+            exit;
+            
+        case 'get_message':
+            $message = $contactMessage->getById($_POST['id'] ?? $_GET['id'] ?? 0);
+            if ($message) {
+                // Auto mark as read when viewing details
+                if ($message['status'] === 'unread') {
+                    $contactMessage->markAsRead($message['id']);
+                    $message['status'] = 'read';
+                }
+                echo json_encode(['success' => true, 'message' => $message]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Pesan tidak ditemukan']);
+            }
             exit;
     }
 }
@@ -75,7 +94,7 @@ $total_records = $total_stmt->fetch(PDO::FETCH_ASSOC)['total'];
 $total_pages = ceil($total_records / $per_page);
 
 $page_title = 'Messages';
-include 'includes/header.php';
+include 'includes/admin_header.php';
 ?>
 
 <div class="min-h-screen bg-gray-50">
@@ -300,7 +319,7 @@ include 'includes/header.php';
 
 <!-- Message Detail Modal -->
 <div id="messageModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+    <div class="relative top-4 mx-auto p-5 border w-11/12 md:w-4/5 lg:w-3/4 xl:w-2/3 max-w-4xl shadow-lg rounded-lg bg-white my-8 modal-content">
         <div class="mt-3">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Detail Pesan</h3>
@@ -341,6 +360,14 @@ document.addEventListener('click', function(event) {
 // View message details
 async function viewMessage(id) {
     try {
+        // Show loading state
+        showModal('Detail Pesan', `
+            <div class="flex items-center justify-center py-8">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <span class="ml-2 text-gray-600">Memuat detail pesan...</span>
+            </div>
+        `);
+        
         const response = await fetch('messages.php', {
             method: 'POST',
             headers: {
@@ -349,16 +376,159 @@ async function viewMessage(id) {
             body: `action=get_message&id=${id}`
         });
         
-        // For now, just show a simple modal with message details
-        // You can enhance this to load actual message data
-        showModal('Detail Pesan', `
-            <div class="bg-blue-50 p-4 rounded-lg mb-4">
-                <p class="text-blue-800">Fitur detail pesan akan segera tersedia.</p>
-            </div>
-        `);
+        const result = await response.json();
+        
+        if (result.success && result.message) {
+            const msg = result.message;
+            const createdDate = new Date(msg.created_at).toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const statusColors = {
+                'unread': 'bg-red-100 text-red-800',
+                'read': 'bg-yellow-100 text-yellow-800',
+                'replied': 'bg-green-100 text-green-800',
+                'archived': 'bg-gray-100 text-gray-800'
+            };
+            
+            const statusLabels = {
+                'unread': 'Belum Dibaca',
+                'read': 'Sudah Dibaca', 
+                'replied': 'Sudah Dibalas',
+                'archived': 'Diarsipkan'
+            };
+            
+            const content = `
+                <div class="space-y-6">
+                    <!-- Header Info -->
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                                        ${msg.name.substring(0, 2).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">${escapeHtml(msg.name)}</h3>
+                                        <p class="text-gray-600">${escapeHtml(msg.email)}</p>
+                                        ${msg.phone ? `<p class="text-sm text-gray-500">${escapeHtml(msg.phone)}</p>` : ''}
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                    <span><i class="fas fa-calendar-alt mr-1"></i>${createdDate}</span>
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColors[msg.status] || 'bg-gray-100 text-gray-800'}">
+                                        ${statusLabels[msg.status] || 'Unknown'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Subject -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Subjek</label>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="font-medium text-gray-900">${escapeHtml(msg.subject)}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Message Content -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Isi Pesan</label>
+                        <div class="bg-white border border-gray-200 p-4 rounded-lg max-h-64 overflow-y-auto custom-scrollbar">
+                            <p class="text-gray-800 whitespace-pre-wrap">${escapeHtml(msg.message)}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Notes -->
+                    ${msg.admin_notes ? `
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Catatan Admin</label>
+                            <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+                                <p class="text-gray-800">${escapeHtml(msg.admin_notes)}</p>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap gap-3 pt-4 border-t border-gray-200">
+                        <a href="mailto:${escapeHtml(msg.email)}?subject=Re: ${encodeURIComponent(msg.subject)}" 
+                           class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-reply mr-2"></i>Balas via Email
+                        </a>
+                        
+                        ${msg.status !== 'replied' ? `
+                            <button onclick="updateStatusFromModal(${msg.id}, 'replied')" 
+                                    class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                <i class="fas fa-check mr-2"></i>Tandai Sudah Dibalas
+                            </button>
+                        ` : ''}
+                        
+                        <button onclick="updateStatusFromModal(${msg.id}, 'archived')" 
+                                class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-archive mr-2"></i>Arsipkan
+                        </button>
+                        
+                        <button onclick="deleteMessageFromModal(${msg.id})" 
+                                class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-trash mr-2"></i>Hapus Pesan
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            showModal('Detail Pesan', content);
+        } else {
+            showModal('Error', `
+                <div class="bg-red-50 p-4 rounded-lg">
+                    <p class="text-red-800">${result.message || 'Gagal memuat detail pesan'}</p>
+                </div>
+            `);
+        }
     } catch (error) {
         console.error('Error:', error);
-        showAlert('Terjadi kesalahan saat memuat detail pesan', 'error');
+        showModal('Error', `
+            <div class="bg-red-50 p-4 rounded-lg">
+                <p class="text-red-800">Terjadi kesalahan saat memuat detail pesan</p>
+            </div>
+        `);
+    }
+}
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Update message status from modal
+async function updateStatusFromModal(id, status) {
+    try {
+        const result = await updateStatus(id, status);
+        closeModal();
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Terjadi kesalahan saat mengupdate status', 'error');
+    }
+}
+
+// Delete message from modal
+async function deleteMessageFromModal(id) {
+    if (!confirm('Apakah Anda yakin ingin menghapus pesan ini?')) {
+        return;
+    }
+    
+    try {
+        const result = await deleteMessage(id);
+        closeModal();
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Terjadi kesalahan saat menghapus pesan', 'error');
     }
 }
 
@@ -475,6 +645,55 @@ setInterval(() => {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+/* Modal animations */
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-content {
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+/* Responsive modal on mobile */
+@media (max-width: 640px) {
+    #messageModal .relative {
+        top: 1rem;
+        margin: 1rem;
+        width: calc(100% - 2rem);
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+    }
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Custom scrollbar for message content */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
 </style>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/admin_footer.php'; ?>
