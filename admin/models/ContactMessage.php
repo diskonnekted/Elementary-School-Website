@@ -216,14 +216,16 @@ class ContactMessage {
     }
 
     public function getRecentMessages($limit = 5) {
+        // Sanitize limit to prevent SQL injection
+        $limit = (int)$limit;
         $query = "SELECT id, name, email, subject, status, created_at 
                   FROM " . $this->table_name . " 
                   ORDER BY created_at DESC 
-                  LIMIT ?";
+                  LIMIT $limit";
 
         try {
             $stmt = $this->conn->prepare($query);
-            $stmt->execute([(int)$limit]);
+            $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch(PDOException $e) {
             error_log("Error getting recent messages: " . $e->getMessage());

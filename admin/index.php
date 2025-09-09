@@ -51,7 +51,7 @@ $recent_news_stmt->execute();
 $recent_news = $recent_news_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Get recent contact messages
-$recent_messages = $contactMessage->getAll('', '', 5, 0);
+$recent_messages = $contactMessage->getRecentMessages(5);
 
 // Get user stats for admin
 $userModel = new User($db);
@@ -271,6 +271,7 @@ $user_stats = $userModel->getStats();
         </div>
 
         <!-- Recent Messages -->
+        <?php if (Auth::canManageMessages()): ?>
         <div class="bg-white rounded-lg shadow">
             <div class="px-6 py-4 border-b border-gray-200">
                 <div class="flex items-center justify-between">
@@ -312,6 +313,21 @@ $user_stats = $userModel->getStats();
                 <?php endif; ?>
             </div>
         </div>
+        <?php else: ?>
+        <!-- Placeholder for users without message permission -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Sistem Informasi</h3>
+            </div>
+            <div class="p-6">
+                <div class="text-center py-8">
+                    <i class="fas fa-info-circle text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-500 mb-2">Website SD Cerdas Ceria</p>
+                    <p class="text-sm text-gray-400">Sistem Manajemen Konten</p>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 
     <!-- System Info -->
