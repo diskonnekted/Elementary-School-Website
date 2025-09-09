@@ -1,5 +1,8 @@
 <?php
-session_start();
+// Start session only if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Include database config with correct path
 if (file_exists(__DIR__ . '/../config/database.php')) {
