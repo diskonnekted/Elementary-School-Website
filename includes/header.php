@@ -25,7 +25,11 @@ $page_title = $page_title ?? 'SD Cerdas Ceria';
         <nav class="navbar">
             <div class="nav-container">
                 <div class="nav-logo">
-                    <i class="fas fa-graduation-cap"></i>
+                    <?php if (!empty($school_info['logo'])): ?>
+                        <img src="admin/uploads/<?php echo htmlspecialchars($school_info['logo']); ?>" alt="Logo" style="height: 40px; width: auto; margin-right: 10px;">
+                    <?php else: ?>
+                        <i class="fas fa-graduation-cap"></i>
+                    <?php endif; ?>
                     <span><?php echo htmlspecialchars($school_info['name']); ?></span>
                 </div>
                 

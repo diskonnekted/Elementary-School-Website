@@ -148,7 +148,7 @@ $stats = $transparency->getStats();
 ?>
 <?php 
 $page_title = 'Kelola Transparansi';
-include 'includes/header.php'; 
+include 'includes/admin_header.php'; 
 ?>
 
 <!-- Transparansi Management Content -->
@@ -324,7 +324,7 @@ include 'includes/header.php';
                 </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/admin_footer.php'; ?>
 
     <!-- Add Modal -->
     <div id="addModal" class="fixed inset-0 z-50 hidden overflow-y-auto">

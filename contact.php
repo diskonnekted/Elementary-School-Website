@@ -19,8 +19,10 @@ $page_title = "Hubungi Kami - " . $school_info['name'];
 
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         tailwind.config = {
             theme: {
@@ -287,89 +289,38 @@ $page_title = "Hubungi Kami - " . $school_info['name'];
                     </div>
                 </div>
 
-                <!-- Map Placeholder -->
+                <!-- Map -->
                 <div class="mt-16 bg-white rounded-3xl shadow-xl p-8">
                     <h3 class="text-2xl font-bold text-gray-900 mb-6">
                         <i class="fas fa-map mr-3 text-red-500"></i>Lokasi Sekolah
                     </h3>
-                    <div class="bg-gray-100 rounded-2xl h-96 flex items-center justify-center">
-                        <div class="text-center text-gray-500">
-                            <i class="fas fa-map-marked-alt text-6xl mb-4"></i>
-                            <p class="text-xl font-semibold mb-2">Peta Lokasi</p>
-                            <p>Jl. Pendidikan No. 123, Jakarta Pusat</p>
-                            <button onclick="openMaps()" class="mt-4 px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors">
-                                <i class="fas fa-external-link-alt mr-2"></i>Buka di Google Maps
-                            </button>
-                        </div>
-                    </div>
+                    <div id="map" class="rounded-2xl h-96 w-full z-10 shadow-inner"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-16">
-        <div class="container">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="lg:col-span-2">
-                    <div class="flex items-center mb-6">
-                        <i class="fas fa-graduation-cap text-3xl text-blue-400 mr-4"></i>
-                        <div>
-                            <h3 class="text-2xl font-bold">SD Cerdas Ceria</h3>
-                            <p class="text-gray-400">Hubungi Kami</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-300 leading-relaxed mb-6">
-                        Kami selalu terbuka untuk pertanyaan, saran, dan masukan dari orang tua siswa dan masyarakat.
-                        Mari bersama-sama membangun pendidikan yang berkualitas.
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="bg-blue-600 p-3 rounded-full hover:bg-blue-700 transition-colors">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="bg-pink-600 p-3 rounded-full hover:bg-pink-700 transition-colors">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="bg-blue-400 p-3 rounded-full hover:bg-blue-500 transition-colors">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Navigasi</h4>
-                    <ul class="space-y-2">
-                        <li><a href="index.php" class="text-gray-300 hover:text-white transition-colors">Beranda</a></li>
-                        <li><a href="profil.php" class="text-gray-300 hover:text-white transition-colors">Profil Sekolah</a></li>
-                        <li><a href="academic.php" class="text-gray-300 hover:text-white transition-colors">Program Akademik</a></li>
-                        <li><a href="inovasi.php" class="text-gray-300 hover:text-white transition-colors">Inovasi</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Kontak</h4>
-                    <div class="space-y-3">
-                        <p class="flex items-center text-gray-300">
-                            <i class="fas fa-map-marker-alt mr-3 text-blue-400"></i>
-                            Jl. Pendidikan No. 123, Jakarta
-                        </p>
-                        <p class="flex items-center text-gray-300">
-                            <i class="fas fa-phone mr-3 text-blue-400"></i>
-                            (021) 1234-5678
-                        </p>
-                        <p class="flex items-center text-gray-300">
-                            <i class="fas fa-envelope mr-3 text-blue-400"></i>
-                            info@sdcerdasceria.sch.id
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-700 mt-12 pt-8 text-center">
-                <p class="text-gray-400">&copy; <?php echo date('Y'); ?> SD Cerdas Ceria. All rights reserved. Made with ❤️</p>
-            </div>
-        </div>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
     <script src="js/script.js"></script>
     <script>
+    // Initialize Leaflet Map
+    document.addEventListener('DOMContentLoaded', function() {
+        // Koordinat sekolah (Jakarta Pusat sebagai contoh)
+        const schoolLat = -6.2088;
+        const schoolLng = 106.8456;
+        
+        var map = L.map('map').setView([schoolLat, schoolLng], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker([schoolLat, schoolLng]).addTo(map)
+            .bindPopup('<div class="text-center"><b>SD Cerdas Ceria</b><br>Jl. Pendidikan No. 123, Jakarta</div>')
+            .openPopup();
+    });
+
     // Contact form handling
     document.getElementById('contactForm').addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -378,7 +329,7 @@ $page_title = "Hubungi Kami - " . $school_info['name'];
         const data = Object.fromEntries(formData);
         
         try {
-            const response = await fetch('/sd/api/contact.php', {
+            const response = await fetch('/api/contact.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

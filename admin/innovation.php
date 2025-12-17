@@ -209,7 +209,7 @@ $total_pages = ceil($total_records / $limit);
 $stats = $innovation->getStats();
 $available_years = $innovation->getAvailableYears();
 
-require_once 'includes/header.php';
+require_once 'includes/admin_header.php';
 ?>
 
 <div class="space-y-6">
@@ -754,4 +754,4 @@ window.onclick = function(event) {
 }
 </script>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once 'includes/admin_footer.php'; ?>

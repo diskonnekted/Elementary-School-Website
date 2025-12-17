@@ -732,29 +732,7 @@ try {
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span><?php echo htmlspecialchars($school_info['name']); ?></span>
-                    </div>
-                    <p><?php echo htmlspecialchars($school_info['description'] ?: 'Membentuk generasi cerdas dan berkarakter dengan nilai-nilai integritas untuk masa depan Indonesia yang lebih baik.'); ?></p>
-                    <div class="anti-corruption-footer">
-                        <p style="font-size: 0.9em; color: #888; margin-top: 15px;">
-                            <i class="fas fa-shield-alt" style="color: var(--primary-color);"></i>
-                            Komitmen Sekolah Anti Korupsi - Transparansi, Akuntabilitas, Integritas
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($school_info['name']); ?>. Semua hak dilindungi undang-undang.</p>
-            </div>
-        </div>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
     <!-- Modal -->
     <div id="infoModal" class="modal">

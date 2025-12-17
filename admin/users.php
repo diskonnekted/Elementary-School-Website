@@ -127,7 +127,7 @@ $page_title = 'User Management';
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Admin</p>
-                        <p class="text-2xl font-bold text-blue-600"><?= $stats['admin'] + $stats['superadmin'] ?></p>
+                        <p class="text-2xl font-bold text-blue-600"><?= ($stats['admin'] ?? 0) + ($stats['superadmin'] ?? 0) ?></p>
                     </div>
                     <i class="fas fa-user-shield text-blue-600 text-2xl"></i>
                 </div>
@@ -145,7 +145,7 @@ $page_title = 'User Management';
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Demo</p>
-                        <p class="text-2xl font-bold text-gray-600"><?= $stats['demo'] ?></p>
+                        <p class="text-2xl font-bold text-gray-600"><?= $stats['demo'] ?? 0 ?></p>
                     </div>
                     <i class="fas fa-eye text-gray-600 text-2xl"></i>
                 </div>
@@ -164,7 +164,7 @@ $page_title = 'User Management';
             <div>
                 <select name="role" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Semua Role</option>
-                    <option value="superadmin" <?= $role_filter === 'superadmin' ? 'selected' : '' ?>>Super Admin</option>
+                    <option value="super_admin" <?= $role_filter === 'super_admin' ? 'selected' : '' ?>>Super Admin</option>
                     <option value="admin" <?= $role_filter === 'admin' ? 'selected' : '' ?>>Admin</option>
                     <option value="guru" <?= $role_filter === 'guru' ? 'selected' : '' ?>>Guru</option>
                     <option value="demo" <?= $role_filter === 'demo' ? 'selected' : '' ?>>Demo</option>

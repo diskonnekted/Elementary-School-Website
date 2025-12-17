@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 class Auth {
     // User roles
-    const ROLE_SUPERADMIN = 'superadmin';
+    const ROLE_SUPERADMIN = 'super_admin';
     const ROLE_ADMIN = 'admin';
     const ROLE_GURU = 'guru';
     const ROLE_DEMO = 'demo';
@@ -58,7 +58,7 @@ class Auth {
         return $_SESSION['user_role'] ?? null;
     }
 
-    public static function requireLogin($redirect_url = '/admin/login.php') {
+    public static function requireLogin($redirect_url = 'login.php') {
         if (!self::isLoggedIn()) {
             header('Location: ' . $redirect_url);
             exit;
@@ -140,7 +140,7 @@ class Auth {
 
     public static function getRoleBadge($role) {
         $badges = [
-            'superadmin' => '<span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Super Admin</span>',
+            'super_admin' => '<span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Super Admin</span>',
             'admin' => '<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Admin</span>',
             'guru' => '<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Guru</span>',
             'demo' => '<span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Demo</span>'

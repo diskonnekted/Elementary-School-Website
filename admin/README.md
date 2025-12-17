@@ -131,7 +131,7 @@ GET /api/news.php?action=categories
 
 ### Styling
 Dashboard menggunakan Tailwind CSS via CDN. Untuk kustomisasi:
-- Edit konfigurasi Tailwind di `includes/header.php`
+- Edit konfigurasi Tailwind di `includes/admin_header.php`
 - Tambah custom CSS di section `<style>`
 
 ### Role-based Access

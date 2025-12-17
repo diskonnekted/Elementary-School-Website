@@ -8,14 +8,25 @@ $school_info = getSchoolInfo();
 $contact_info = getContactInfo();
 $social_media = getSocialMedia();
 
+// Get parameters
+$section_filter = $_GET['section'] ?? '';
+$search_query = $_GET['search'] ?? '';
+
+// Section type names and icons
+$section_info = [
+    'financial' => ['name' => 'Laporan Keuangan', 'icon' => 'fas fa-chart-pie', 'color' => '#6366f1'],
+    'budget' => ['name' => 'Anggaran Sekolah', 'icon' => 'fas fa-calculator', 'color' => '#8b5cf6'],
+    'governance' => ['name' => 'Tata Kelola', 'icon' => 'fas fa-users-cog', 'color' => '#06b6d4'],
+    'reports' => ['name' => 'Laporan Berkala', 'icon' => 'fas fa-file-alt', 'color' => '#10b981'],
+    'policies' => ['name' => 'Kebijakan', 'icon' => 'fas fa-balance-scale', 'color' => '#f59e0b'],
+    'procurement' => ['name' => 'Pengadaan', 'icon' => 'fas fa-shopping-cart', 'color' => '#ef4444'],
+    'other' => ['name' => 'Lainnya', 'icon' => 'fas fa-folder', 'color' => '#6b7280']
+];
+
 try {
     $database = new Database();
     $db = $database->getConnection();
     $transparency = new Transparency($db);
-    
-    // Get parameters
-    $section_filter = $_GET['section'] ?? '';
-    $search_query = $_GET['search'] ?? '';
     
     // Get all active transparency data
     $all_transparencies = $transparency->getAll($section_filter);
@@ -36,17 +47,6 @@ try {
     
     // Get statistics
     $stats = $transparency->getStats();
-    
-    // Section type names and icons
-    $section_info = [
-        'financial' => ['name' => 'Laporan Keuangan', 'icon' => 'fas fa-chart-pie', 'color' => '#6366f1'],
-        'budget' => ['name' => 'Anggaran Sekolah', 'icon' => 'fas fa-calculator', 'color' => '#8b5cf6'],
-        'governance' => ['name' => 'Tata Kelola', 'icon' => 'fas fa-users-cog', 'color' => '#06b6d4'],
-        'reports' => ['name' => 'Laporan Berkala', 'icon' => 'fas fa-file-alt', 'color' => '#10b981'],
-        'policies' => ['name' => 'Kebijakan', 'icon' => 'fas fa-balance-scale', 'color' => '#f59e0b'],
-        'procurement' => ['name' => 'Pengadaan', 'icon' => 'fas fa-shopping-cart', 'color' => '#ef4444'],
-        'other' => ['name' => 'Lainnya', 'icon' => 'fas fa-folder', 'color' => '#6b7280']
-    ];
     
 } catch (Exception $e) {
     error_log("Error in transparansi.php: " . $e->getMessage());
@@ -228,6 +228,86 @@ try {
         </div>
     </section>
 
+    <!-- Integrity Assessment (DESAKTI) Integration -->
+    <section class="py-12 bg-white border-t border-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 md:p-12 shadow-sm border border-blue-100">
+                <div class="flex flex-col md:flex-row items-center justify-between mb-8">
+                    <div class="mb-6 md:mb-0 md:pr-8 w-full">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-4">
+                            <i class="fas fa-shield-alt mr-2"></i>Integritas Sekolah
+                        </div>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-4">Penilaian Integritas (DESAKTI)</h2>
+                        <p class="text-gray-600 mb-6 text-lg">
+                            Transparansi capaian pemenuhan indikator Desa Antikorupsi dan Tata Kelola Sekolah Berintegritas.
+                            Silakan cek nilai integritas sekolah kami melalui jendela di bawah ini atau kunjungi portal resmi.
+                        </p>
+                        
+                        <div class="flex flex-wrap gap-4 items-center">
+                            <div class="bg-white px-4 py-3 rounded-lg border border-gray-200 flex items-center shadow-sm">
+                                <span class="text-sm text-gray-500 mr-2">NPSN Sekolah:</span>
+                                <span class="font-mono font-bold text-gray-900 text-lg"><?php echo htmlspecialchars($school_info['npsn'] ?? '-'); ?></span>
+                                <button onclick="navigator.clipboard.writeText('<?php echo htmlspecialchars($school_info['npsn'] ?? ''); ?>'); alert('NPSN disalin!');" class="ml-3 text-blue-600 hover:text-blue-800 transition-colors" title="Salin NPSN">
+                                    <i class="far fa-copy"></i>
+                                </button>
+                            </div>
+                            <a href="https://desakti.banjarnegarakab.go.id/front/hasil" target="_blank" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm">
+                                Buka Portal DESAKTI <i class="fas fa-external-link-alt ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- External Link View (Replaced Iframe due to Security Policy) -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                    <div class="p-8 text-center">
+                        <div class="w-20 h-20 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center animate-pulse">
+                            <i class="fas fa-external-link-alt text-blue-600 text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Akses Portal Penilaian</h3>
+                        <p class="text-gray-600 mb-8 max-w-2xl mx-auto">
+                            Demi alasan keamanan dan privasi data, portal penilaian DESAKTI tidak dapat ditampilkan langsung di halaman ini. 
+                            Silakan ikuti langkah mudah berikut untuk melihat nilai integritas sekolah:
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8 text-left">
+                            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 relative">
+                                <div class="absolute -top-3 -left-3 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-sm">1</div>
+                                <h4 class="font-semibold text-gray-900 mb-2">Salin NPSN</h4>
+                                <p class="text-sm text-gray-600 mb-3">Salin Nomor Pokok Sekolah Nasional (NPSN) kami.</p>
+                                <div class="flex items-center bg-white border border-gray-300 rounded px-3 py-2">
+                                    <span class="font-mono font-bold text-gray-800 flex-1"><?php echo htmlspecialchars($school_info['npsn'] ?? '-'); ?></span>
+                                    <button onclick="navigator.clipboard.writeText('<?php echo htmlspecialchars($school_info['npsn'] ?? ''); ?>'); alert('NPSN disalin!');" class="text-blue-600 hover:text-blue-800" title="Salin">
+                                        <i class="far fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 relative">
+                                <div class="absolute -top-3 -left-3 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-sm">2</div>
+                                <h4 class="font-semibold text-gray-900 mb-2">Buka Portal</h4>
+                                <p class="text-sm text-gray-600 mb-3">Klik tombol di bawah untuk membuka portal resmi DESAKTI di tab baru.</p>
+                                <a href="https://desakti.banjarnegarakab.go.id/front/hasil" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center">
+                                    Buka sekarang <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 relative">
+                                <div class="absolute -top-3 -left-3 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold shadow-sm">3</div>
+                                <h4 class="font-semibold text-gray-900 mb-2">Cari Data</h4>
+                                <p class="text-sm text-gray-600">Tempel (Paste) NPSN pada kolom pencarian di website DESAKTI untuk melihat hasil.</p>
+                            </div>
+                        </div>
+
+                        <a href="https://desakti.banjarnegarakab.go.id/front/hasil" target="_blank" class="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-xl text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <i class="fas fa-search-location mr-2"></i> Buka Portal DESAKTI Sekarang
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Transparency Content by Categories -->
     <?php if (empty($all_transparencies)): ?>
         <section class="py-16 bg-gray-50">
@@ -392,55 +472,7 @@ try {
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span><?php echo htmlspecialchars($school_info['name']); ?></span>
-                    </div>
-                    <p><?php echo htmlspecialchars($school_info['description']); ?></p>
-                    <div class="social-links">
-                        <a href="<?php echo htmlspecialchars($social_media['facebook']); ?>"><i class="fab fa-facebook"></i></a>
-                        <a href="<?php echo htmlspecialchars($social_media['instagram']); ?>"><i class="fab fa-instagram"></i></a>
-                        <a href="<?php echo htmlspecialchars($social_media['youtube']); ?>"><i class="fab fa-youtube"></i></a>
-                        <a href="<?php echo htmlspecialchars($social_media['whatsapp']); ?>"><i class="fab fa-whatsapp"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Menu Utama</h3>
-                    <ul>
-                        <li><a href="profil.html">Profil</a></li>
-                        <li><a href="berita.php">Berita</a></li>
-                        <li><a href="akademik.php">Akademik</a></li>
-                        <li><a href="inovasi.php">Inovasi</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Informasi</h3>
-                    <ul>
-                        <li><a href="info.php">Informasi Umum</a></li>
-                        <li><a href="transparansi.php">Transparansi</a></li>
-                        <li><a href="kontak.html">Kontak</a></li>
-                        <li><a href="pendidikan-karakter.html">Pendidikan Karakter</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Kontak</h3>
-                    <ul>
-                        <li><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($contact_info['address']); ?></li>
-                        <li><i class="fas fa-phone"></i> <?php echo htmlspecialchars($contact_info['phone']); ?></li>
-                        <li><i class="fas fa-envelope"></i> <?php echo htmlspecialchars($contact_info['email']); ?></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
     <!-- Detail Modal -->
     <div id="detailModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black bg-opacity-50">

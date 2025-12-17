@@ -33,7 +33,7 @@ try {
                 <div class="innovation-header" style="display: flex; gap: 20px; margin-bottom: 24px; align-items: start;">
                     <?php if ($innovationData['image']): ?>
                     <div style="flex-shrink: 0;">
-                        <img src="admin/uploads/innovations/<?= htmlspecialchars($innovationData['image']) ?>" 
+                        <img src="admin/uploads/<?= htmlspecialchars($innovationData['image']) ?>" 
                              alt="<?= htmlspecialchars($innovationData['title']) ?>"
                              style="width: 140px; height: 140px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                     </div>

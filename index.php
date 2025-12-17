@@ -88,35 +88,38 @@ $social_media = getSocialMedia();
                     <!-- Logo -->
                     <div class="flex items-center space-x-3 animate-fade-in-up">
                         <div class="relative">
-                            <div class="w-12 h-12 bg-gradient-to-r from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center shadow-lg animate-pulse-glow">
-                                <i class="fas fa-graduation-cap text-white text-xl"></i>
-                            </div>
-                            <div class="absolute -top-1 -right-1 w-4 h-4 bg-accent-500 rounded-full animate-ping"></div>
+                            <?php if (!empty($school_info['logo'])): ?>
+                                <img src="admin/uploads/<?php echo htmlspecialchars($school_info['logo']); ?>" alt="Logo" class="w-12 h-12 rounded-2xl shadow-lg object-cover bg-white p-1">
+                            <?php else: ?>
+                                <div class="w-12 h-12 bg-gradient-to-r from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center shadow-lg animate-pulse-glow">
+                                    <i class="fas fa-graduation-cap text-white text-xl"></i>
+                                </div>
+                            <?php endif; ?>
                         </div>
                         <div>
-                            <h1 class="text-xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
+                            <h1 class="text-xl font-bold text-white">
                                 <?php echo htmlspecialchars($school_info['name']); ?>
                             </h1>
-                            <p class="text-xs text-gray-500 font-medium">Modern Education</p>
+                            <p class="text-xs text-gray-200 font-medium">Modern Education</p>
                         </div>
                     </div>
                     
                     <!-- Desktop Menu -->
                     <div class="hidden lg:flex items-center space-x-1">
-                        <a href="index.php" class="px-4 py-2 rounded-full text-sm font-semibold bg-primary-500 text-white shadow-lg hover:bg-primary-600 transition-all duration-300 hover-lift">
+                        <a href="index.php" class="nav-link px-4 py-2 rounded-full text-sm font-semibold bg-primary-500 text-white shadow-lg hover:bg-primary-600 transition-all duration-300 hover-lift">
                             Beranda
                         </a>
-                        <a href="profil.php" class="px-4 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all duration-300">
+                        <a href="profil.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300">
                             Profil
                         </a>
-                        <a href="berita.php" class="px-4 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all duration-300">
+                        <a href="berita.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300">
                             Berita
                         </a>
-                        <a href="academic.php" class="px-4 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all duration-300">
+                        <a href="academic.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300">
                             Akademik
                         </a>
                         <div class="relative group">
-                            <a href="info.php" class="px-4 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all duration-300 flex items-center">
+                            <a href="info.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300 flex items-center">
                                 Info <i class="fas fa-chevron-down ml-1 text-xs"></i>
                             </a>
                             <div class="absolute top-full left-0 mt-2 w-48 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
@@ -128,17 +131,17 @@ $social_media = getSocialMedia();
                                 </a>
                             </div>
                         </div>
-                        <a href="inovasi.php" class="px-4 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all duration-300">
+                        <a href="inovasi.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300">
                             Inovasi
                         </a>
-                        <a href="contact.php" class="px-4 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-white/50 hover:text-primary-600 transition-all duration-300">
+                        <a href="contact.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300">
                             Kontak
                         </a>
                     </div>
                     
                     <!-- Mobile Menu Button -->
-                    <button class="lg:hidden p-2 rounded-full hover:bg-white/20 transition-all duration-300" id="mobile-menu-button">
-                        <i class="fas fa-bars text-primary-600 text-xl"></i>
+                    <button class="lg:hidden p-2 rounded-full hover:bg-white/20 transition-all duration-300 text-white" id="mobile-menu-button">
+                        <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
@@ -247,34 +250,34 @@ $social_media = getSocialMedia();
                 <div class="relative animate-slide-in-right">
                     <div class="relative">
                         <!-- Main Card -->
-                        <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 hover-lift transition-all duration-500 hover:bg-white/15">
+                        <div class="bg-white/95 backdrop-blur-xl border border-white/20 rounded-3xl p-8 hover-lift transition-all duration-500 hover:bg-white shadow-2xl">
                             <div class="flex items-center space-x-4 mb-6">
-                                <div class="w-16 h-16 bg-gradient-to-br from-accent-400 to-accent-600 rounded-2xl flex items-center justify-center animate-pulse-glow">
-                                    <i class="fas fa-shield-heart text-white text-2xl"></i>
+                                <div class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg" style="background-color: #4f46e5;">
+                                    <i class="fas fa-shield-alt text-white text-3xl"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-2xl font-bold text-white">Pendidikan Karakter</h3>
-                                    <p class="text-white/70">Anti-Korupsi Sejak Dini</p>
+                                    <h3 class="text-2xl font-bold text-gray-800">Pendidikan Karakter</h3>
+                                    <p class="text-primary-600 font-medium">Anti-Korupsi Sejak Dini</p>
                                 </div>
                             </div>
                             
-                            <p class="text-white/80 leading-relaxed mb-6">
+                            <p class="text-gray-600 leading-relaxed mb-6">
                                 Menanamkan 9 nilai integritas: Kejujuran, Tanggung Jawab, Disiplin, Keadilan, Kepedulian, Kesederhanaan, Kerja Keras, Kemandirian, dan Keberanian.
                             </p>
                             
                             <!-- Values Grid -->
                             <div class="grid grid-cols-3 gap-3">
-                                <div class="bg-white/10 rounded-xl p-3 text-center hover:bg-white/20 transition-all duration-300">
+                                <div class="bg-primary-50 rounded-xl p-3 text-center hover:bg-primary-100 transition-all duration-300">
                                     <div class="text-2xl mb-1">🤝</div>
-                                    <div class="text-xs text-white/80">Kejujuran</div>
+                                    <div class="text-xs text-gray-700 font-medium">Kejujuran</div>
                                 </div>
-                                <div class="bg-white/10 rounded-xl p-3 text-center hover:bg-white/20 transition-all duration-300">
+                                <div class="bg-primary-50 rounded-xl p-3 text-center hover:bg-primary-100 transition-all duration-300">
                                     <div class="text-2xl mb-1">📚</div>
-                                    <div class="text-xs text-white/80">Tanggung Jawab</div>
+                                    <div class="text-xs text-gray-700 font-medium">Tanggung Jawab</div>
                                 </div>
-                                <div class="bg-white/10 rounded-xl p-3 text-center hover:bg-white/20 transition-all duration-300">
+                                <div class="bg-primary-50 rounded-xl p-3 text-center hover:bg-primary-100 transition-all duration-300">
                                     <div class="text-2xl mb-1">⏰</div>
-                                    <div class="text-xs text-white/80">Disiplin</div>
+                                    <div class="text-xs text-gray-700 font-medium">Disiplin</div>
                                 </div>
                             </div>
                         </div>
@@ -432,9 +435,15 @@ $social_media = getSocialMedia();
             
             <div style="max-width: 800px; margin: 0 auto; text-align: center;">
                 <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                    <div style="width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 24px; background: linear-gradient(135deg, #3B82F6, #1E40AF); display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-user-tie" style="font-size: 2.5rem; color: white;"></i>
-                    </div>
+                    <?php if (!empty($school_info['principal_photo'])): ?>
+                        <img src="admin/uploads/<?php echo htmlspecialchars($school_info['principal_photo']); ?>" 
+                             alt="<?php echo htmlspecialchars($school_info['principal_name']); ?>" 
+                             style="width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 24px; object-fit: cover; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: block;">
+                    <?php else: ?>
+                        <div style="width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 24px; background: linear-gradient(135deg, #3B82F6, #1E40AF); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user-tie" style="font-size: 2.5rem; color: white;"></i>
+                        </div>
+                    <?php endif; ?>
                     <h3 style="font-size: 1.5rem; color: #1E40AF; margin-bottom: 12px;">
                         <?php echo htmlspecialchars($school_info['principal_name']); ?>
                     </h3>
@@ -498,78 +507,70 @@ $social_media = getSocialMedia();
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span><?php echo htmlspecialchars($school_info['name']); ?></span>
-                    </div>
-                    <p><?php echo htmlspecialchars($school_info['description']); ?></p>
-                    <div class="social-links">
-                        <a href="<?php echo htmlspecialchars($social_media['facebook']); ?>" target="_blank" rel="noopener">
-                            <i class="fab fa-facebook"></i>
-                        </a>
-                        <a href="<?php echo htmlspecialchars($social_media['instagram']); ?>" target="_blank" rel="noopener">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="<?php echo htmlspecialchars($social_media['youtube']); ?>" target="_blank" rel="noopener">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                        <a href="<?php echo htmlspecialchars($social_media['twitter']); ?>" target="_blank" rel="noopener">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Menu Utama</h3>
-                    <ul>
-                        <li><a href="profil.php">Profil</a></li>
-                        <li><a href="berita.php">Berita</a></li>
-                        <li><a href="akademik.php">Akademik</a></li>
-                        <li><a href="inovasi.php">Inovasi</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Informasi</h3>
-                    <ul>
-                        <li><a href="info.php">Informasi Umum</a></li>
-                        <li><a href="transparansi.php">Transparansi</a></li>
-                        <li><a href="kontak.html">Kontak</a></li>
-                        <li><a href="pendidikan-karakter.html">Pendidikan Karakter</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Kontak</h3>
-                    <ul>
-                        <li><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($contact_info['address']); ?></li>
-                        <li><i class="fas fa-phone"></i> <?php echo htmlspecialchars($contact_info['phone']); ?></li>
-                        <li><i class="fas fa-envelope"></i> <?php echo htmlspecialchars($contact_info['email']); ?></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="footer-divider"></div>
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-                    <p>&copy; 2024 <?php echo htmlspecialchars($school_info['name']); ?>. All rights reserved.</p>
-                    <p>NPSN: <?php echo htmlspecialchars($school_info['npsn']); ?></p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
     <script>
-        // Mobile menu toggle
-        document.querySelector('.hamburger').addEventListener('click', function() {
-            document.querySelector('.nav-menu').classList.toggle('active');
-            this.classList.toggle('active');
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        const glassEffect = navbar.querySelector('.glass-effect');
+        const navLinks = navbar.querySelectorAll('.nav-link:not(.bg-primary-500)');
+        const logoText = navbar.querySelector('h1');
+        const logoSubtext = navbar.querySelector('p');
+        const mobileMenuBtnIcon = navbar.querySelector('#mobile-menu-button i');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                // Scrolled state
+                glassEffect.style.background = 'rgba(255, 255, 255, 0.95)';
+                glassEffect.style.borderBottom = '1px solid rgba(0, 0, 0, 0.05)';
+                glassEffect.classList.add('shadow-md');
+                
+                // Change text colors to dark
+                logoText.classList.remove('text-white');
+                logoText.classList.add('text-gray-800');
+                
+                logoSubtext.classList.remove('text-gray-200');
+                logoSubtext.classList.add('text-gray-500');
+                
+                mobileMenuBtnIcon.classList.remove('text-white');
+                mobileMenuBtnIcon.classList.add('text-gray-800');
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-gray-100', 'hover:bg-white/20', 'hover:text-white');
+                    link.classList.add('text-gray-700', 'hover:bg-primary-50', 'hover:text-primary-600');
+                });
+            } else {
+                // Top state
+                glassEffect.style.background = 'rgba(255, 255, 255, 0.1)';
+                glassEffect.style.borderBottom = '1px solid rgba(255, 255, 255, 0.2)';
+                glassEffect.classList.remove('shadow-md');
+                
+                // Change text colors back to light
+                logoText.classList.remove('text-gray-800');
+                logoText.classList.add('text-white');
+                
+                logoSubtext.classList.remove('text-gray-500');
+                logoSubtext.classList.add('text-gray-200');
+                
+                mobileMenuBtnIcon.classList.remove('text-gray-800');
+                mobileMenuBtnIcon.classList.add('text-white');
+
+                navLinks.forEach(link => {
+                    link.classList.remove('text-gray-700', 'hover:bg-primary-50', 'hover:text-primary-600');
+                    link.classList.add('text-gray-100', 'hover:bg-white/20', 'hover:text-white');
+                });
+            }
         });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
         
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

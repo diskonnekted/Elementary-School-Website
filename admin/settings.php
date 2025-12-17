@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Get current settings for form
 $currentSettings = $settings->getSettings();
 
-require_once 'includes/header.php';
+require_once 'includes/admin_header.php';
 ?>
 
 <div class="space-y-6">
@@ -454,4 +454,4 @@ showToast('<?= addslashes($error) ?>', 'error');
 </script>
 <?php endif; ?>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once 'includes/admin_footer.php'; ?>

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/auth.php';
 // Ensure user is logged in
 if (!Auth::isLoggedIn()) {
     header('Location: login.php');

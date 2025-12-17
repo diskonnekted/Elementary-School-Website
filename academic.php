@@ -140,71 +140,12 @@ $page_title = "Program Akademik - " . $school_info['name'];
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-16">
-        <div class="container">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="lg:col-span-2">
-                    <div class="flex items-center mb-6">
-                        <i class="fas fa-graduation-cap text-3xl text-blue-400 mr-4"></i>
-                        <div>
-                            <h3 class="text-2xl font-bold"><?php echo htmlspecialchars($school_info['name']); ?></h3>
-                            <p class="text-gray-400">Program Akademik</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-300 leading-relaxed mb-6">
-                        Menyediakan pendidikan berkualitas dengan kurikulum yang komprehensif dan metode pembelajaran inovatif
-                        untuk mempersiapkan generasi masa depan.
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="bg-blue-600 p-3 rounded-full hover:bg-blue-700 transition-colors">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="bg-pink-600 p-3 rounded-full hover:bg-pink-700 transition-colors">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="bg-blue-400 p-3 rounded-full hover:bg-blue-500 transition-colors">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Navigasi</h4>
-                    <ul class="space-y-2">
-                        <li><a href="index.php" class="text-gray-300 hover:text-white transition-colors">Beranda</a></li>
-                        <li><a href="profil.php" class="text-gray-300 hover:text-white transition-colors">Profil Sekolah</a></li>
-                        <li><a href="berita.php" class="text-gray-300 hover:text-white transition-colors">Berita</a></li>
-                        <li><a href="inovasi.php" class="text-gray-300 hover:text-white transition-colors">Inovasi</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Kontak</h4>
-                    <div class="space-y-3">
-                        <p class="flex items-center text-gray-300">
-                            <i class="fas fa-map-marker-alt mr-3 text-blue-400"></i>
-                            <?php echo nl2br(htmlspecialchars($contact_info['address'] ?: 'Alamat belum diatur')); ?>
-                        </p>
-                        <p class="flex items-center text-gray-300">
-                            <i class="fas fa-phone mr-3 text-blue-400"></i>
-                            <?php echo htmlspecialchars($contact_info['phone'] ?: 'Telepon belum diatur'); ?>
-                        </p>
-                        <p class="flex items-center text-gray-300">
-                            <i class="fas fa-envelope mr-3 text-blue-400"></i>
-                            <?php echo htmlspecialchars($contact_info['email'] ?: 'Email belum diatur'); ?>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-700 mt-12 pt-8 text-center">
-                <p class="text-gray-400">&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($school_info['name']); ?>. All rights reserved. Made with ❤️</p>
-            </div>
-        </div>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
     <script src="js/script.js"></script>
     <script>
     // Academic API Integration
-    const API_URL = '/sd/api/academic.php';
+    const API_URL = '/api/academic.php';
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {

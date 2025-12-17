@@ -232,23 +232,7 @@ try {
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>SD Cerdas Ceria</span>
-                    </div>
-                    <p>Mewujudkan pembelajaran yang berintegritas, transparan, dan inovatif.</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 SD Cerdas Ceria. Semua hak dilindungi undang-undang.</p>
-            </div>
-        </div>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
     <!-- Modal -->
     <div id="innovationModal" class="modal">

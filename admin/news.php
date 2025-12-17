@@ -227,7 +227,7 @@ if ($action === 'edit' && $id) {
     }
 }
 
-require_once 'includes/header.php';
+require_once 'includes/admin_header.php';
 ?>
 
 <?php if ($action === 'list'): ?>
@@ -582,4 +582,4 @@ showToast('<?= addslashes($error) ?>', 'error');
 </script>
 <?php endif; ?>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once 'includes/admin_footer.php'; ?>

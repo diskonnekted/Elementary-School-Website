@@ -145,7 +145,7 @@ $type_counts = $generalInfo->countByType();
 $priority_counts = $generalInfo->countByPriority();
 $expired_count = count($generalInfo->getExpired());
 
-require_once 'includes/header.php';
+require_once 'includes/admin_header.php';
 ?>
 
 <div class="space-y-6">
@@ -592,4 +592,4 @@ window.onclick = function(event) {
 }
 </script>
 
-<?php require_once 'includes/footer.php'; ?>
+<?php require_once 'includes/admin_footer.php'; ?>

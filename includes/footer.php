@@ -15,7 +15,11 @@ $social_media = getSocialMedia();
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="footer-logo">
-                        <i class="fas fa-graduation-cap"></i>
+                        <?php if (!empty($school_info['logo'])): ?>
+                            <img src="admin/uploads/<?php echo htmlspecialchars($school_info['logo']); ?>" alt="Logo" style="height: 40px; width: auto; margin-right: 10px; background: white; padding: 2px; border-radius: 4px;">
+                        <?php else: ?>
+                            <i class="fas fa-graduation-cap"></i>
+                        <?php endif; ?>
                         <span><?php echo htmlspecialchars($school_info['name']); ?></span>
                     </div>
                     <p><?php echo htmlspecialchars($school_info['description']); ?></p>
@@ -29,8 +33,8 @@ $social_media = getSocialMedia();
                         <a href="<?php echo htmlspecialchars($social_media['youtube']); ?>" target="_blank" rel="noopener">
                             <i class="fab fa-youtube"></i>
                         </a>
-                        <a href="<?php echo htmlspecialchars($social_media['whatsapp']); ?>" target="_blank" rel="noopener">
-                            <i class="fab fa-whatsapp"></i>
+                        <a href="<?php echo htmlspecialchars($social_media['twitter']); ?>" target="_blank" rel="noopener">
+                            <i class="fab fa-twitter"></i>
                         </a>
                     </div>
                 </div>
@@ -40,7 +44,7 @@ $social_media = getSocialMedia();
                     <ul>
                         <li><a href="profil.php">Profil</a></li>
                         <li><a href="berita.php">Berita</a></li>
-                        <li><a href="akademik.php">Akademik</a></li>
+                        <li><a href="academic.php">Akademik</a></li>
                         <li><a href="inovasi.php">Inovasi</a></li>
                     </ul>
                 </div>
@@ -50,8 +54,8 @@ $social_media = getSocialMedia();
                     <ul>
                         <li><a href="info.php">Informasi Umum</a></li>
                         <li><a href="transparansi.php">Transparansi</a></li>
-                        <li><a href="kontak.html">Kontak</a></li>
-                        <li><a href="pendidikan-karakter.html">Pendidikan Karakter</a></li>
+                        <li><a href="contact.php">Kontak</a></li>
+                        <li><a href="index.php#integrity-values">Pendidikan Karakter</a></li>
                     </ul>
                 </div>
                 
@@ -61,10 +65,15 @@ $social_media = getSocialMedia();
                         <li><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($contact_info['address']); ?></li>
                         <li><i class="fas fa-phone"></i> <?php echo htmlspecialchars($contact_info['phone']); ?></li>
                         <li><i class="fas fa-envelope"></i> <?php echo htmlspecialchars($contact_info['email']); ?></li>
-                        <?php if (!empty($contact_info['operating_hours'])): ?>
-                        <li><i class="fas fa-clock"></i> <?php echo htmlspecialchars($contact_info['operating_hours']); ?></li>
-                        <?php endif; ?>
                     </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-divider"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                    <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($school_info['name']); ?>. All rights reserved.</p>
+                    <p>NPSN: <?php echo htmlspecialchars($school_info['npsn']); ?></p>
                 </div>
             </div>
         </div>
@@ -72,10 +81,23 @@ $social_media = getSocialMedia();
 
     <script>
         // Mobile menu toggle
-        document.querySelector('.hamburger').addEventListener('click', function() {
-            document.querySelector('.nav-menu').classList.toggle('active');
-            this.classList.toggle('active');
-        });
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        
+        // Also support class-based hamburger (legacy)
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                this.classList.toggle('active');
+            });
+        }
     </script>
-</body>
-</html>

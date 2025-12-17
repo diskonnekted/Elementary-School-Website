@@ -169,7 +169,7 @@ if ($action === 'edit' && $id) {
     $program_data = $academic->getById($id);
 }
 
-include 'includes/header.php';
+require_once 'includes/admin_header.php';
 ?>
 
 <div class="min-h-screen bg-gray-50 py-8">
@@ -469,4 +469,4 @@ include 'includes/header.php';
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/admin_footer.php'; ?>

@@ -265,58 +265,7 @@ $page_title = "Profil - " . $school_info['name'];
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <i class="fas fa-graduation-cap"></i>
-                        <span>SD Cerdas Ceria</span>
-                    </div>
-                    <p>Membentuk generasi cerdas dan berkarakter untuk masa depan Indonesia yang lebih baik.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Menu Utama</h3>
-                    <ul>
-                        <li><a href="profil.php">Profil</a></li>
-                        <li><a href="berita.html">Berita</a></li>
-                        <li><a href="akademik.html">Akademik</a></li>
-                        <li><a href="inovasi.html">Inovasi</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Informasi</h3>
-                    <ul>
-                        <li><a href="info.html">Info Umum</a></li>
-                        <li><a href="transparansi.html">Transparansi</a></li>
-                        <li><a href="kontak.html">Kontak</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Kontak</h3>
-                    <div class="contact-info">
-                        <p><i class="fas fa-map-marker-alt"></i> Jl. Pendidikan No. 123, Jakarta</p>
-                        <p><i class="fas fa-phone"></i> (021) 12345678</p>
-                        <p><i class="fas fa-envelope"></i> info@sdcerdasceria.sch.id</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2024 SD Cerdas Ceria. Semua hak dilindungi undang-undang.</p>
-            </div>
-        </div>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
     <script src="js/script.js"></script>
 </body>

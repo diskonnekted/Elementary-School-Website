@@ -108,7 +108,7 @@ function verifyPassword($password, $hash) {
 
 // Fungsi untuk cek apakah user sudah login
 function isLoggedIn() {
-    return isset($_SESSION['admin_id']) && !empty($_SESSION['admin_id']);
+    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
 }
 
 // Fungsi untuk redirect jika belum login
@@ -130,7 +130,7 @@ function getCurrentUser() {
     
     $query = "SELECT id, username, email, full_name, role, last_login FROM admin_users WHERE id = ? AND is_active = 1";
     $stmt = $db->prepare($query);
-    $stmt->execute([$_SESSION['admin_id']]);
+    $stmt->execute([$_SESSION['user_id']]);
     
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
@@ -184,7 +184,7 @@ function formatFileSize($bytes) {
 // Fungsi untuk log activity
 function logActivity($action, $description, $user_id = null) {
     if (!$user_id) {
-        $user_id = $_SESSION['admin_id'] ?? null;
+        $user_id = $_SESSION['user_id'] ?? null;
     }
     
     $database = new Database();
