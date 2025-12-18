@@ -66,7 +66,7 @@ $user_stats = $userModel->getStats();
         <div class="flex items-center">
             <div class="flex-1">
                 <h2 class="text-2xl font-bold mb-2">Selamat Datang, <?= htmlspecialchars($current_user['name']) ?>!</h2>
-                <p class="text-white/80">Kelola konten website SD Cerdas Ceria dengan mudah melalui dashboard admin ini.</p>
+                <p class="text-white/80">Kelola konten website SD Integra IV dengan mudah melalui dashboard admin ini.</p>
                 <?php if (Auth::isReadOnly()): ?>
                 <div class="mt-3 flex items-center text-yellow-200">
                     <i class="fas fa-info-circle mr-2"></i>
@@ -189,7 +189,7 @@ $user_stats = $userModel->getStats();
             
             <?php if (Auth::canEditContent() && !Auth::isReadOnly()): ?>
             <a href="academic.php?action=create" class="flex flex-col items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
-                <i class="fas fa-book-plus text-2xl text-primary-600 mb-2"></i>
+                <i class="fas fa-book text-2xl text-primary-600 mb-2"></i>
                 <span class="text-sm font-medium text-gray-700">Tambah Program</span>
             </a>
             <?php elseif (Auth::canEditContent()): ?>
@@ -323,7 +323,7 @@ $user_stats = $userModel->getStats();
             <div class="p-6">
                 <div class="text-center py-8">
                     <i class="fas fa-info-circle text-4xl text-gray-400 mb-4"></i>
-                    <p class="text-gray-500 mb-2">Website SD Cerdas Ceria</p>
+                    <p class="text-gray-500 mb-2">Website SD Integra IV</p>
                     <p class="text-sm text-gray-400">Sistem Manajemen Konten</p>
                 </div>
             </div>

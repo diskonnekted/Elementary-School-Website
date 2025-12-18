@@ -136,7 +136,7 @@ try {
                         <div style="flex: 1;">
                             <h5 style="margin: 0 0 8px 0; color: #0c4a6e; font-size: 1rem; font-weight: 600;">Pendidikan Berintegritas</h5>
                             <p style="margin: 0; color: #0369a1; line-height: 1.6; font-size: 0.95rem;">
-                                Inovasi ini merupakan bagian integral dari komitmen SD Cerdas Ceria dalam menciptakan ekosistem pendidikan yang 
+                                Inovasi ini merupakan bagian integral dari komitmen SD Integra IV dalam menciptakan ekosistem pendidikan yang 
                                 transparan, akuntabel, dan berintegritas. Setiap implementasi inovasi didokumentasikan secara terbuka untuk 
                                 memastikan akuntabilitas dan mendukung pembentukan karakter siswa yang jujur dan bertanggung jawab.
                             </p>

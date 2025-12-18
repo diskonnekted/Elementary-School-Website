@@ -2,15 +2,42 @@
 class User {
     private $conn;
     private $table_name = "admin_users";
+    private $hasTeacherProfiles = null;
+    private $hasSubjectColumn = null;
 
     // User roles
     const ROLE_SUPERADMIN = 'super_admin';
     const ROLE_ADMIN = 'admin';
     const ROLE_GURU = 'guru';
+    const ROLE_STAF = 'staf';
     const ROLE_DEMO = 'demo';
 
     public function __construct($db) {
         $this->conn = $db;
+    }
+
+    private function hasTeacherProfiles() {
+        if ($this->hasTeacherProfiles === null) {
+            try {
+                $this->conn->query("SELECT 1 FROM teacher_profiles LIMIT 1");
+                $this->hasTeacherProfiles = true;
+            } catch (Exception $e) {
+                $this->hasTeacherProfiles = false;
+            }
+        }
+        return $this->hasTeacherProfiles;
+    }
+
+    private function hasSubjectColumn() {
+        if ($this->hasSubjectColumn === null) {
+            try {
+                $stmt = $this->conn->query("SHOW COLUMNS FROM " . $this->table_name . " LIKE 'subject'");
+                $this->hasSubjectColumn = $stmt && $stmt->rowCount() > 0;
+            } catch (Exception $e) {
+                $this->hasSubjectColumn = false;
+            }
+        }
+        return $this->hasSubjectColumn;
     }
 
     public function create($username, $email, $password, $full_name, $role = self::ROLE_GURU, $created_by = null) {
@@ -107,25 +134,46 @@ class User {
     }
 
     public function getAll($role = '', $status = '', $limit = 50, $offset = 0, $search = '') {
-        $query = "SELECT id, username, email, full_name, role, is_active, 
-                  CASE WHEN is_active = 1 THEN 'active' ELSE 'suspended' END as status,
-                  last_login, created_at FROM " . $this->table_name;
+        if ($this->hasTeacherProfiles()) {
+            if ($this->hasSubjectColumn()) {
+                $query = "SELECT au.id, au.username, au.email, au.full_name, au.role, au.is_active, 
+                          CASE WHEN au.is_active = 1 THEN 'active' ELSE 'suspended' END as status,
+                          au.last_login, au.created_at, COALESCE(tp.subject, au.subject) AS subject,
+                          tp.photo_filename, tp.bio, tp.education, tp.achievements, tp.certificates, tp.training
+                          FROM " . $this->table_name . " au LEFT JOIN teacher_profiles tp ON tp.user_id = au.id";
+            } else {
+                $query = "SELECT au.id, au.username, au.email, au.full_name, au.role, au.is_active, 
+                          CASE WHEN au.is_active = 1 THEN 'active' ELSE 'suspended' END as status,
+                          au.last_login, au.created_at, tp.subject AS subject,
+                          tp.photo_filename, tp.bio, tp.education, tp.achievements, tp.certificates, tp.training
+                          FROM " . $this->table_name . " au LEFT JOIN teacher_profiles tp ON tp.user_id = au.id";
+            }
+        } else {
+            if ($this->hasSubjectColumn()) {
+                $query = "SELECT id, username, email, full_name, role, is_active, 
+                          CASE WHEN is_active = 1 THEN 'active' ELSE 'suspended' END as status,
+                          last_login, created_at, subject, NULL as photo_filename, NULL as bio, NULL as education, NULL as achievements, NULL as certificates, NULL as training FROM " . $this->table_name;
+            } else {
+                $query = "SELECT id, username, email, full_name, role, is_active, 
+                          CASE WHEN is_active = 1 THEN 'active' ELSE 'suspended' END as status,
+                          last_login, created_at, NULL AS subject, NULL as photo_filename, NULL as bio, NULL as education, NULL as achievements, NULL as certificates, NULL as training FROM " . $this->table_name;
+            }
+        }
         $conditions = [];
         $params = [];
 
         if (!empty($role)) {
-            $conditions[] = "role = ?";
+            $conditions[] = ($this->hasTeacherProfiles() ? "LOWER(au.role) = LOWER(?)" : "LOWER(role) = LOWER(?)");
             $params[] = $role;
         }
 
         if ($status !== '') {
-            $conditions[] = "is_active = ?";
-            // Map status string to integer if necessary
-            $params[] = ($status === 'active' ? 1 : ($status === 'suspended' ? 0 : $status));
+            $conditions[] = ($this->hasTeacherProfiles() ? "au.is_active = ?" : "is_active = ?");
+            $params[] = ($status === 'active' ? 1 : (($status === 'suspended' || $status === 'inactive') ? 0 : $status));
         }
 
         if (!empty($search)) {
-            $conditions[] = "(username LIKE ? OR email LIKE ? OR full_name LIKE ?)";
+            $conditions[] = ($this->hasTeacherProfiles() ? "(au.username LIKE ? OR au.email LIKE ? OR au.full_name LIKE ?)" : "(username LIKE ? OR email LIKE ? OR full_name LIKE ?)" );
             $searchParam = "%$search%";
             $params = array_merge($params, [$searchParam, $searchParam, $searchParam]);
         }
@@ -136,7 +184,7 @@ class User {
 
         $limit = (int)$limit;
         $offset = (int)$offset;
-        $query .= " ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
+        $query .= $this->hasTeacherProfiles() ? " ORDER BY au.created_at DESC LIMIT $limit OFFSET $offset" : " ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
 
         try {
             $stmt = $this->conn->prepare($query);
@@ -148,9 +196,31 @@ class User {
     }
 
     public function getById($id) {
-        $query = "SELECT id, username, email, full_name, role, is_active, 
-                  CASE WHEN is_active = 1 THEN 'active' ELSE 'suspended' END as status,
-                  last_login, created_at FROM " . $this->table_name . " WHERE id = ?";
+        if ($this->hasTeacherProfiles()) {
+            if ($this->hasSubjectColumn()) {
+                $query = "SELECT au.id, au.username, au.email, au.full_name, au.role, au.is_active, 
+                          CASE WHEN au.is_active = 1 THEN 'active' ELSE 'suspended' END as status,
+                          au.last_login, au.created_at, COALESCE(tp.subject, au.subject) AS subject,
+                          tp.photo_filename, tp.bio, tp.education, tp.achievements, tp.certificates, tp.training
+                          FROM " . $this->table_name . " au LEFT JOIN teacher_profiles tp ON tp.user_id = au.id WHERE au.id = ?";
+            } else {
+                $query = "SELECT au.id, au.username, au.email, au.full_name, au.role, au.is_active, 
+                          CASE WHEN au.is_active = 1 THEN 'active' ELSE 'suspended' END as status,
+                          au.last_login, au.created_at, tp.subject AS subject,
+                          tp.photo_filename, tp.bio, tp.education, tp.achievements, tp.certificates, tp.training
+                          FROM " . $this->table_name . " au LEFT JOIN teacher_profiles tp ON tp.user_id = au.id WHERE au.id = ?";
+            }
+        } else {
+            if ($this->hasSubjectColumn()) {
+                $query = "SELECT id, username, email, full_name, role, is_active, 
+                          CASE WHEN is_active = 1 THEN 'active' ELSE 'suspended' END as status,
+                          last_login, created_at, subject, NULL as photo_filename, NULL as bio, NULL as education, NULL as achievements, NULL as certificates, NULL as training FROM " . $this->table_name . " WHERE id = ?";
+            } else {
+                $query = "SELECT id, username, email, full_name, role, is_active, 
+                          CASE WHEN is_active = 1 THEN 'active' ELSE 'suspended' END as status,
+                          last_login, created_at, NULL AS subject, NULL as photo_filename, NULL as bio, NULL as education, NULL as achievements, NULL as certificates, NULL as training FROM " . $this->table_name . " WHERE id = ?";
+            }
+        }
         try {
             $stmt = $this->conn->prepare($query);
             $stmt->execute([$id]);
@@ -251,6 +321,7 @@ class User {
                     SUM(CASE WHEN role = 'super_admin' THEN 1 ELSE 0 END) as superadmin,
                     SUM(CASE WHEN role = 'admin' THEN 1 ELSE 0 END) as admin,
                     SUM(CASE WHEN role = 'guru' THEN 1 ELSE 0 END) as guru,
+                    SUM(CASE WHEN role = 'staf' THEN 1 ELSE 0 END) as staf,
                     SUM(CASE WHEN role = 'demo' THEN 1 ELSE 0 END) as demo
                   FROM " . $this->table_name;
         
@@ -265,6 +336,7 @@ class User {
                 'superadmin' => 0,
                 'admin' => 0,
                 'guru' => 0,
+                'staf' => 0,
                 'demo' => 0
             ];
         }

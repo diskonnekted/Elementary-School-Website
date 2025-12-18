@@ -100,4 +100,100 @@ $social_media = getSocialMedia();
                 this.classList.toggle('active');
             });
         }
+
+        // Navbar Scroll Effect (Standardized)
+        const navbar = document.getElementById('navbar');
+        if (navbar) {
+            const glassEffect = navbar.querySelector('.glass-effect');
+            const navLinks = navbar.querySelectorAll('.nav-link:not(.bg-primary-500)');
+            const logoText = navbar.querySelector('h1');
+            const logoSubtext = navbar.querySelector('p');
+            const mobileMenuBtnIcon = navbar.querySelector('#mobile-menu-button i');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 20) {
+                    // Scrolled state
+                    if (glassEffect) {
+                        glassEffect.style.background = 'rgba(255, 255, 255, 0.95)';
+                        glassEffect.style.borderBottom = '1px solid rgba(0, 0, 0, 0.05)';
+                        glassEffect.classList.add('shadow-md');
+                    }
+                    
+                    // Change text colors to dark
+                    if (logoText) {
+                        logoText.classList.remove('text-white');
+                        logoText.classList.add('text-gray-800');
+                    }
+                    
+                    if (logoSubtext) {
+                        logoSubtext.classList.remove('text-gray-200');
+                        logoSubtext.classList.add('text-gray-500');
+                    }
+                    
+                    if (mobileMenuBtnIcon) {
+                        mobileMenuBtnIcon.classList.remove('text-white');
+                        mobileMenuBtnIcon.classList.add('text-gray-800');
+                    }
+
+                    if (navLinks) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('text-gray-100', 'hover:bg-white/20', 'hover:text-white');
+                            link.classList.add('text-gray-700', 'hover:bg-primary-50', 'hover:text-primary-600');
+                        });
+                    }
+                } else {
+                    // Top state
+                    if (glassEffect) {
+                        glassEffect.style.background = 'rgba(255, 255, 255, 0.1)';
+                        glassEffect.style.borderBottom = '1px solid rgba(255, 255, 255, 0.2)';
+                        glassEffect.classList.remove('shadow-md');
+                    }
+                    
+                    // Change text colors back to light
+                    if (logoText) {
+                        logoText.classList.remove('text-gray-800');
+                        logoText.classList.add('text-white');
+                    }
+                    
+                    if (logoSubtext) {
+                        logoSubtext.classList.remove('text-gray-500');
+                        logoSubtext.classList.add('text-gray-200');
+                    }
+                    
+                    if (mobileMenuBtnIcon) {
+                        mobileMenuBtnIcon.classList.remove('text-gray-800');
+                        mobileMenuBtnIcon.classList.add('text-white');
+                    }
+
+                    if (navLinks) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('text-gray-700', 'hover:bg-primary-50', 'hover:text-primary-600');
+                            link.classList.add('text-gray-100', 'hover:bg-white/20', 'hover:text-white');
+                        });
+                    }
+                }
+            });
+        }
+
+        // Dropdown toggle for touch devices
+        const dropdowns = document.querySelectorAll('.nav-item.dropdown');
+        dropdowns.forEach(dd => {
+            const toggle = dd.querySelector('.dropdown-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Close other dropdowns
+                    dropdowns.forEach(other => { if (other !== dd) other.classList.remove('open'); });
+                    dd.classList.toggle('open');
+                });
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const anyDropdown = e.target.closest('.nav-item.dropdown');
+            if (!anyDropdown) {
+                dropdowns.forEach(dd => dd.classList.remove('open'));
+            }
+        });
     </script>

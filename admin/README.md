@@ -1,6 +1,6 @@
-# Dashboard Admin SD Cerdas Ceria
+# Dashboard Admin SD Integra IV
 
-Dashboard backend untuk mengelola konten website SD Cerdas Ceria menggunakan PHP dan Tailwind CSS.
+Dashboard backend untuk mengelola konten website SD Integra IV menggunakan PHP dan Tailwind CSS.
 
 ## 📋 Fitur Utama
 
@@ -26,7 +26,7 @@ mysql -u root -p < admin/config/database_setup.sql
 Edit file `admin/config/database.php` sesuai dengan setting MySQL Anda:
 ```php
 private $host = "localhost";
-private $db_name = "sd_cerdas_ceria";
+private $db_name = "sd_integra_iv";
 private $username = "root";
 private $password = "your_password";
 ```

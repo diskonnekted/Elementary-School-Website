@@ -159,7 +159,7 @@ try {
                         <div>
                             <h5 class="font-semibold text-blue-900 mb-1">Komitmen Pendidikan Berintegritas</h5>
                             <p class="text-blue-800 text-sm">
-                                Inovasi ini merupakan bagian dari upaya SD Cerdas Ceria dalam menciptakan lingkungan 
+                                Inovasi ini merupakan bagian dari upaya SD Integra IV dalam menciptakan lingkungan 
                                 pembelajaran yang transparan, akuntabel, dan mendukung pembentukan karakter siswa yang berintegritas.
                             </p>
                         </div>

@@ -44,19 +44,9 @@ try {
     $all_info = [];
 }
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informasi Umum - <?php echo htmlspecialchars($school_info['name']); ?></title>
-    <?php include 'includes/favicon.php'; ?>
-
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* Additional styles for info page */
+<?php $page_title = 'Informasi Umum'; ?>
+<?php include 'includes/header.php'; ?>
+<style>
         .info-section {
             padding: 80px 0;
         }
@@ -400,42 +390,7 @@ try {
                 padding: 20px;
             }
         }
-    </style>
-</head>
-<body>
-    <!-- Header & Navigation -->
-    <header class="header">
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span><?php echo htmlspecialchars($school_info['name']); ?></span>
-                </div>
-                
-                <ul class="nav-menu">
-                    <li class="nav-item"><a href="index.php" class="nav-link">Beranda</a></li>
-                    <li class="nav-item"><a href="profil.php" class="nav-link">Profil</a></li>
-                    <li class="nav-item"><a href="berita.php" class="nav-link">Berita</a></li>
-                    <li class="nav-item"><a href="academic.php" class="nav-link">Akademik</a></li>
-                    <li class="nav-item dropdown">
-                        <a href="info.php" class="nav-link dropdown-toggle active">Info</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="info.php">Informasi Umum</a></li>
-                            <li><a href="transparansi.php">Transparansi</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item"><a href="inovasi.php" class="nav-link">Inovasi</a></li>
-                    <li class="nav-item"><a href="contact.php" class="nav-link">Kontak</a></li>
-                </ul>
-                
-                <div class="hamburger">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
-            </div>
-        </nav>
-    </header>
+</style>
 
     <!-- Page Header -->
     <section class="page-header">
@@ -547,7 +502,7 @@ try {
             <?php else: ?>
             <!-- Category Grid -->
             <div class="info-header">
-                <h2>Informasi Umum SD Cerdas Ceria</h2>
+                <h2>Informasi Umum SD Integra IV</h2>
                 <p>Temukan berbagai informasi penting tentang kegiatan, prosedur, dan dokumen sekolah yang mendukung pendidikan berintegritas</p>
             </div>
             

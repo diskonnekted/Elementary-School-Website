@@ -7,74 +7,14 @@ $school_info = getSchoolInfo();
 $contact_info = getContactInfo();
 
 // Set page title
-$page_title = "Portal Berita - " . $school_info['name'];
-?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
-    <?php include 'includes/favicon.php'; ?>
+$page_title = 'Portal Berita';
+$body_class = 'bg-gray-50';
 
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="bg-gray-50">
-    <!-- Header & Navigation -->
-    <header class="header sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <i class="fas fa-graduation-cap text-2xl text-blue-600"></i>
-                    <span class="text-xl font-bold"><?php echo htmlspecialchars($school_info['name']); ?></span>
-                </div>
-                
-                <ul class="nav-menu">
-                    <li class="nav-item"><a href="index.php" class="nav-link">Beranda</a></li>
-                    <li class="nav-item"><a href="profil.php" class="nav-link">Profil</a></li>
-                    <li class="nav-item"><a href="berita.php" class="nav-link active">Berita</a></li>
-                    <li class="nav-item"><a href="academic.php" class="nav-link">Akademik</a></li>
-                    <li class="nav-item dropdown">
-                        <a href="info.php" class="nav-link dropdown-toggle">Info</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="info.php">Informasi Umum</a></li>
-                            <li><a href="transparansi.php">Transparansi</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item"><a href="inovasi.php" class="nav-link">Inovasi</a></li>
-                    <li class="nav-item"><a href="contact.php" class="nav-link">Kontak</a></li>
-                </ul>
-                
-                <div class="hamburger">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
-            </div>
-        </nav>
-    </header>
+include 'includes/header.php';
+?>
 
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 py-20 overflow-hidden">
+    <section class="relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 pt-32 pb-20 overflow-hidden">
         <div class="absolute inset-0 bg-black/20"></div>
         <div class="absolute inset-0">
             <div class="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
@@ -280,7 +220,7 @@ $page_title = "Portal Berita - " . $school_info['name'];
     const itemsPerPage = 9;
 
     // API Base URL
-    const API_URL = '/api/news.php';
+    const API_URL = 'api/news.php';
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {

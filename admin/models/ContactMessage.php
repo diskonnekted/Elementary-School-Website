@@ -24,6 +24,9 @@ class ContactMessage {
             replied_at TIMESTAMP NULL,
             replied_by VARCHAR(100),
             admin_notes TEXT,
+            recipient_type VARCHAR(50) DEFAULT 'general',
+            recipient_id INT NULL,
+            student_name VARCHAR(100) NULL,
             INDEX idx_status (status),
             INDEX idx_created (created_at),
             INDEX idx_email (email)
@@ -31,15 +34,88 @@ class ContactMessage {
 
         try {
             $this->conn->exec($query);
+            
+            // Add columns if they don't exist (for migration)
+            $this->checkAndAddColumn('recipient_type', "VARCHAR(50) DEFAULT 'general'");
+            $this->checkAndAddColumn('recipient_id', "INT NULL");
+            $this->checkAndAddColumn('student_name', "VARCHAR(100) NULL");
+            
+            // Fix for missing name/subject from older schema
+            $this->checkAndAddColumn('name', "VARCHAR(100) NOT NULL DEFAULT ''");
+            $this->checkAndAddColumn('subject', "VARCHAR(200) NOT NULL DEFAULT 'No Subject'");
+
+            // Fix for missing updated_at/admin_notes
+            $this->checkAndAddColumn('updated_at', "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+            $this->checkAndAddColumn('admin_notes', "TEXT");
+            
+            // Ensure replied_by is VARCHAR (fix legacy INT type)
+            $this->fixColumnType('replied_by', "VARCHAR(100)");
+
+            // Run schema updates for status enum and data migration
+            $this->updateSchema();
+            
         } catch(PDOException $e) {
-            error_log("Error creating contact_messages table: " . $e->getMessage());
+            error_log("Error creating/updating contact_messages table: " . $e->getMessage());
         }
     }
 
-    public function create($name, $email, $phone, $subject, $message, $ip_address = null, $user_agent = null) {
+    private function updateSchema() {
+        try {
+            // Check if status has 'new' value (old schema)
+            $stmt = $this->conn->query("SHOW COLUMNS FROM " . $this->table_name . " LIKE 'status'");
+            $column = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // If we detect the old enum or want to ensure the new one
+            if ($column) {
+                // First modify to include both old and new values to be safe
+                $this->conn->exec("ALTER TABLE " . $this->table_name . " MODIFY COLUMN status ENUM('new', 'unread', 'read', 'replied', 'archived') DEFAULT 'unread'");
+                
+                // Update old 'new' records to 'unread'
+                $this->conn->exec("UPDATE " . $this->table_name . " SET status = 'unread' WHERE status = 'new'");
+                
+                // Finalize enum
+                $this->conn->exec("ALTER TABLE " . $this->table_name . " MODIFY COLUMN status ENUM('unread', 'read', 'replied', 'archived') DEFAULT 'unread'");
+            }
+
+            // Migrate data from first_name/last_name if name is empty
+            $check = $this->conn->query("SHOW COLUMNS FROM " . $this->table_name . " LIKE 'first_name'");
+            if ($check->rowCount() > 0) {
+                 $this->conn->exec("UPDATE " . $this->table_name . " SET name = CONCAT(first_name, ' ', last_name) WHERE name = '' OR name IS NULL");
+            }
+        } catch (PDOException $e) {
+             // Ignore errors during migration
+        }
+    }
+
+    private function checkAndAddColumn($column, $definition) {
+        try {
+            $check = $this->conn->query("SHOW COLUMNS FROM " . $this->table_name . " LIKE '$column'");
+            if ($check->rowCount() == 0) {
+                $this->conn->exec("ALTER TABLE " . $this->table_name . " ADD COLUMN $column $definition");
+            }
+        } catch(PDOException $e) {
+            // Ignore error if column check fails
+        }
+    }
+
+    private function fixColumnType($column, $definition) {
+        try {
+            $stmt = $this->conn->query("SHOW COLUMNS FROM " . $this->table_name . " LIKE '$column'");
+            $col = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($col) {
+                // Simple check: if current type contains 'int' but we want 'varchar', or vice versa
+                // Or just blindly update it if it exists
+                $this->conn->exec("ALTER TABLE " . $this->table_name . " MODIFY COLUMN $column $definition");
+            }
+        } catch(PDOException $e) {
+            // Ignore error
+        }
+    }
+
+    public function create($name, $email, $phone, $subject, $message, $ip_address = null, $user_agent = null, $recipient_type = 'general', $recipient_id = null, $student_name = null) {
         $query = "INSERT INTO " . $this->table_name . " 
-                  (name, email, phone, subject, message, ip_address, user_agent) 
-                  VALUES (?, ?, ?, ?, ?, ?, ?)";
+                  (name, email, phone, subject, message, ip_address, user_agent, recipient_type, recipient_id, student_name) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
             $stmt = $this->conn->prepare($query);
@@ -50,6 +126,8 @@ class ContactMessage {
             $phone = htmlspecialchars(strip_tags(trim($phone)));
             $subject = htmlspecialchars(strip_tags(trim($subject)));
             $message = htmlspecialchars(strip_tags(trim($message)));
+            $recipient_type = htmlspecialchars(strip_tags(trim($recipient_type)));
+            $student_name = $student_name ? htmlspecialchars(strip_tags(trim($student_name))) : null;
             
             // Validate required fields
             if (empty($name) || empty($email) || empty($subject) || empty($message)) {
@@ -68,7 +146,10 @@ class ContactMessage {
                 $subject,
                 $message,
                 $ip_address,
-                $user_agent
+                $user_agent,
+                $recipient_type,
+                $recipient_id,
+                $student_name
             ]);
 
             return [
@@ -86,7 +167,7 @@ class ContactMessage {
         }
     }
 
-    public function getAll($status = '', $limit = 50, $offset = 0, $search = '') {
+    public function getAll($status = '', $limit = 50, $offset = 0, $search = '', $type = '') {
         $query = "SELECT * FROM " . $this->table_name;
         $conditions = [];
         $params = [];
@@ -94,6 +175,11 @@ class ContactMessage {
         if (!empty($status)) {
             $conditions[] = "status = ?";
             $params[] = $status;
+        }
+
+        if (!empty($type)) {
+            $conditions[] = "recipient_type = ?";
+            $params[] = $type;
         }
 
         if (!empty($search)) {

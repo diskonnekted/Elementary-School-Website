@@ -145,7 +145,7 @@ try {
                         <div style="flex: 1;">
                             <h5 style="margin: 0 0 5px 0; color: #0c4a6e; font-size: 0.9rem; font-weight: 600;">Komitmen Transparansi</h5>
                             <p style="margin: 0; font-size: 0.8rem; color: #0369a1; line-height: 1.4;">
-                                Informasi ini dipublikasikan sebagai bagian dari komitmen SD Cerdas Ceria dalam mewujudkan transparansi, akuntabilitas, dan nilai-nilai integritas dalam pendidikan.
+                                Informasi ini dipublikasikan sebagai bagian dari komitmen SD Integra IV dalam mewujudkan transparansi, akuntabilitas, dan nilai-nilai integritas dalam pendidikan.
                             </p>
                         </div>
                     </div>

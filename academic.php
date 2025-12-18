@@ -8,73 +8,13 @@ $contact_info = getContactInfo();
 
 // Set page title
 $page_title = "Program Akademik - " . $school_info['name'];
-?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
-    <?php include 'includes/favicon.php'; ?>
+$body_class = 'bg-gray-50';
 
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="bg-gray-50">
-    <!-- Header & Navigation -->
-    <header class="header sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <i class="fas fa-graduation-cap text-2xl text-blue-600"></i>
-                    <span class="text-xl font-bold"><?php echo htmlspecialchars($school_info['name']); ?></span>
-                </div>
-                
-                <ul class="nav-menu">
-                    <li class="nav-item"><a href="index.php" class="nav-link">Beranda</a></li>
-                    <li class="nav-item"><a href="profil.php" class="nav-link">Profil</a></li>
-                    <li class="nav-item"><a href="berita.php" class="nav-link">Berita</a></li>
-                    <li class="nav-item"><a href="academic.php" class="nav-link active">Akademik</a></li>
-                    <li class="nav-item dropdown">
-                        <a href="info.php" class="nav-link dropdown-toggle">Info</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="info.php">Informasi Umum</a></li>
-                            <li><a href="transparansi.php">Transparansi</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item"><a href="inovasi.php" class="nav-link">Inovasi</a></li>
-                    <li class="nav-item"><a href="contact.php" class="nav-link">Kontak</a></li>
-                </ul>
-                
-                <div class="hamburger">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
-            </div>
-        </nav>
-    </header>
+include 'includes/header.php';
+?>
 
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-green-600 via-blue-600 to-indigo-800 py-20 overflow-hidden">
+    <section class="relative bg-gradient-to-br from-green-600 via-blue-600 to-indigo-800 pt-32 pb-20 overflow-hidden">
         <div class="absolute inset-0 bg-black/20"></div>
         <div class="absolute inset-0">
             <div class="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
@@ -140,12 +80,67 @@ $page_title = "Program Akademik - " . $school_info['name'];
         </div>
     </section>
 
+    <!-- Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeModal()"></div>
+
+            <!-- Modal panel -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full relative z-[101]">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-2xl leading-6 font-bold text-gray-900 mb-2" id="modalTitle"></h3>
+                            <div class="flex flex-wrap gap-2 mb-4" id="modalBadges">
+                                <!-- Badges will be inserted here -->
+                            </div>
+                            
+                            <div class="mt-4 space-y-6">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Deskripsi</h4>
+                                    <p class="text-gray-600" id="modalDescription"></p>
+                                </div>
+                                
+                                <div id="modalSubjectsContainer">
+                                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Mata Pelajaran</h4>
+                                    <div class="flex flex-wrap gap-2" id="modalSubjects"></div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div id="modalLearningMethodsContainer">
+                                        <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Metode Pembelajaran</h4>
+                                        <ul class="list-disc list-inside text-gray-600 text-sm space-y-1" id="modalLearningMethods"></ul>
+                                    </div>
+                                    
+                                    <div id="modalAssessmentMethodsContainer">
+                                        <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Metode Penilaian</h4>
+                                        <ul class="list-disc list-inside text-gray-600 text-sm space-y-1" id="modalAssessmentMethods"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" onclick="closeModal()" class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <?php include 'includes/footer.php'; ?>
 
     <script src="js/script.js"></script>
     <script>
     // Academic API Integration
-    const API_URL = '/api/academic.php';
+    const API_URL = 'api/academic.php';
+
+    // Global data store
+    let academicData = [];
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', function() {
@@ -158,10 +153,13 @@ $page_title = "Program Akademik - " . $school_info['name'];
         hideError();
         
         try {
+            console.log('Fetching academic data from:', API_URL);
             const response = await fetch(API_URL);
             const data = await response.json();
             
             if (data.success) {
+                console.log('Academic data loaded:', data.data);
+                academicData = data.data; // Store data for modal
                 displayAcademicData(data.data);
                 showContent();
             } else {
@@ -188,33 +186,33 @@ $page_title = "Program Akademik - " . $school_info['name'];
 
                 <!-- Academic Programs Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                    ${data.map(item => `
-                        <div class="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group">
+                    ${data.map((item, index) => `
+                        <div onclick="openModal(${index})" class="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer transform hover:-translate-y-2">
                             <div class="relative h-48 bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center">
-                                <div class="text-white text-center">
-                                    <i class="fas fa-book text-5xl mb-4 opacity-90"></i>
-                                    <h3 class="text-2xl font-bold">${item.title}</h3>
+                                ${item.image ? 
+                                    `<img src="${item.image}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover">
+                                     <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors"></div>` : 
+                                    `<div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-green-500"></div>`
+                                }
+                                <div class="relative z-10 text-white text-center p-4">
+                                    <i class="fas fa-book text-4xl mb-3 opacity-90 drop-shadow-lg"></i>
+                                    <h3 class="text-2xl font-bold drop-shadow-lg">${item.title}</h3>
                                 </div>
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                             </div>
                             <div class="p-8">
-                                <p class="text-gray-600 leading-relaxed mb-6">${item.description}</p>
-                                <div class="space-y-3">
-                                    ${item.details ? item.details.map(detail => `
-                                        <div class="flex items-center text-sm text-gray-700">
-                                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
-                                            ${detail}
-                                        </div>
-                                    `).join('') : ''}
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
+                                        ${item.grade_level_name}
+                                    </span>
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">
+                                        ${item.curriculum_type_name}
+                                    </span>
                                 </div>
-                                ${item.schedule ? `
-                                    <div class="mt-6 p-4 bg-gray-50 rounded-xl">
-                                        <h4 class="font-semibold text-gray-900 mb-2">
-                                            <i class="fas fa-clock mr-2 text-blue-500"></i>Jadwal
-                                        </h4>
-                                        <p class="text-gray-600 text-sm">${item.schedule}</p>
-                                    </div>
-                                ` : ''}
+                                <p class="text-gray-600 leading-relaxed mb-6 line-clamp-3">${item.description}</p>
+                                
+                                <div class="flex items-center text-blue-600 font-semibold group-hover:translate-x-2 transition-transform">
+                                    Selengkapnya <i class="fas fa-arrow-right ml-2"></i>
+                                </div>
                             </div>
                         </div>
                     `).join('')}
@@ -243,6 +241,80 @@ $page_title = "Program Akademik - " . $school_info['name'];
                 </div>
             </div>
         `;
+    }
+
+    // Modal Functions
+    function openModal(index) {
+        console.log('Opening modal for index:', index);
+        const item = academicData[index];
+        if (!item) {
+            console.error('No data found for index:', index);
+            return;
+        }
+
+        // Set content
+        document.getElementById('modalTitle').textContent = item.title;
+        document.getElementById('modalDescription').textContent = item.description;
+        
+        // Badges
+        const badgesContainer = document.getElementById('modalBadges');
+        badgesContainer.innerHTML = `
+            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+                ${item.grade_level_name}
+            </span>
+            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
+                ${item.curriculum_type_name}
+            </span>
+        `;
+
+        // Subjects
+        const subjectsContainer = document.getElementById('modalSubjects');
+        const subjectsWrapper = document.getElementById('modalSubjectsContainer');
+        if (item.subjects && item.subjects.length > 0) {
+            subjectsContainer.innerHTML = item.subjects.map(subject => 
+                `<span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm border border-gray-200">${subject}</span>`
+            ).join('');
+            subjectsWrapper.classList.remove('hidden');
+        } else {
+            subjectsWrapper.classList.add('hidden');
+        }
+
+        // Learning Methods
+        const learningMethodsContainer = document.getElementById('modalLearningMethods');
+        const learningMethodsWrapper = document.getElementById('modalLearningMethodsContainer');
+        if (item.learning_methods && item.learning_methods.length > 0) {
+            learningMethodsContainer.innerHTML = item.learning_methods.map(method => 
+                `<li>${method}</li>`
+            ).join('');
+            learningMethodsWrapper.classList.remove('hidden');
+        } else {
+            learningMethodsWrapper.classList.add('hidden');
+        }
+
+        // Assessment Methods
+        const assessmentMethodsContainer = document.getElementById('modalAssessmentMethods');
+        const assessmentMethodsWrapper = document.getElementById('modalAssessmentMethodsContainer');
+        if (item.assessment_methods && item.assessment_methods.length > 0) {
+            assessmentMethodsContainer.innerHTML = item.assessment_methods.map(method => 
+                `<li>${method}</li>`
+            ).join('');
+            assessmentMethodsWrapper.classList.remove('hidden');
+        } else {
+            assessmentMethodsWrapper.classList.add('hidden');
+        }
+
+        // Show modal
+        const modal = document.getElementById('detailModal');
+        modal.classList.remove('hidden');
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('detailModal');
+        modal.classList.add('hidden');
+        // Restore body scroll
+        document.body.style.overflow = 'auto';
     }
 
     // Show/hide states

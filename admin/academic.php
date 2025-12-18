@@ -1,7 +1,8 @@
 <?php
 $page_title = 'Program Akademik';
+require_once 'includes/auth.php';
 require_once 'includes/functions.php';
-requireLogin();
+Auth::requireLogin();
 
 require_once 'config/database.php';
 require_once 'models/Academic.php';
@@ -16,7 +17,7 @@ if (!isset($_SESSION['csrf_token'])) {
 }
 
 $action = $_GET['action'] ?? 'list';
-$id = $_GET['id'] ?? null;
+$id = $_GET['id'] ?? $_POST['id'] ?? null;
 $message = '';
 $error = '';
 
@@ -27,6 +28,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Invalid request token.';
     } else {
         $post_action = $_POST['action'] ?? '';
+        
+        // Helper to process JSON fields
+        $processJsonField = function($input) {
+            if (empty($input)) return '[]';
+            // Check if already valid JSON
+            json_decode($input);
+            if (json_last_error() === JSON_ERROR_NONE) return $input;
+            // Convert comma-separated to JSON
+            $array = array_filter(array_map('trim', explode(',', $input)));
+            return json_encode(array_values($array));
+        };
+
+        // Pre-process JSON fields
+        $json_fields = ['subjects', 'learning_methods', 'assessment_methods'];
+        foreach ($json_fields as $field) {
+            if (isset($_POST[$field])) {
+                $_POST[$field] = $processJsonField($_POST[$field]);
+            }
+        }
         
         switch ($post_action) {
             case 'create':
@@ -64,8 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $academic->sort_order = $_POST['sort_order'] ?? 0;
                     
                     if ($academic->create()) {
-                        $message = 'Program akademik berhasil ditambahkan!';
-                        $action = 'list'; // Redirect to list after successful creation
+                        Auth::setFlashMessage('success', 'Program akademik berhasil ditambahkan!');
+                        header('Location: academic.php');
+                        exit;
                     } else {
                         $error = 'Gagal menambahkan program akademik.';
                     }
@@ -118,8 +139,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $academic->sort_order = $_POST['sort_order'] ?? 0;
                         
                         if ($academic->update()) {
-                            $message = 'Program akademik berhasil diperbarui!';
-                            $action = 'list'; // Redirect to list after successful update
+                            Auth::setFlashMessage('success', 'Program akademik berhasil diperbarui!');
+                            header('Location: academic.php');
+                            exit;
                         } else {
                             $error = 'Gagal memperbarui program akademik.';
                         }
@@ -140,15 +162,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if (!empty($existing_data['image']) && file_exists($existing_data['image'])) {
                             unlink($existing_data['image']);
                         }
-                        $message = 'Program akademik berhasil dihapus!';
+                        Auth::setFlashMessage('success', 'Program akademik berhasil dihapus!');
                     } else {
-                        $error = 'Gagal menghapus program akademik.';
+                        Auth::setFlashMessage('error', 'Gagal menghapus program akademik.');
                     }
                 }
-                $action = 'list';
+                header('Location: academic.php');
+                exit;
                 break;
         }
     }
+}
+
+// Handle DELETE via GET
+if ($action === 'delete' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    $csrf_token = $_GET['csrf_token'] ?? '';
+    if ($csrf_token === $_SESSION['csrf_token']) {
+        if ($id) {
+            $existing_data = $academic->getById($id);
+            $academic->id = $id;
+            if ($academic->delete()) {
+                if (!empty($existing_data['image']) && file_exists($existing_data['image'])) {
+                    unlink($existing_data['image']);
+                }
+                Auth::setFlashMessage('success', 'Program akademik berhasil dihapus!');
+            } else {
+                Auth::setFlashMessage('error', 'Gagal menghapus program akademik.');
+            }
+        } else {
+             Auth::setFlashMessage('error', 'ID program tidak valid.');
+        }
+    } else {
+        Auth::setFlashMessage('error', 'Token CSRF tidak valid!');
+    }
+    header('Location: academic.php');
+    exit;
+}
+
+// Handle AJAX request for single program data
+if ($action === 'get_academic' && $id) {
+    $program_data = $academic->getById($id);
+    header('Content-Type: application/json');
+    echo json_encode($program_data);
+    exit;
 }
 
 // Get data for list view
@@ -163,97 +219,81 @@ $programs = $academic->getAll($limit, $offset, $search, $grade_level_filter, $cu
 $total_programs = $academic->count($search, $grade_level_filter, $curriculum_filter);
 $total_pages = ceil($total_programs / $limit);
 
-// Get single program data for edit
-$program_data = null;
-if ($action === 'edit' && $id) {
-    $program_data = $academic->getById($id);
-}
-
 require_once 'includes/admin_header.php';
 ?>
 
-<div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Program Akademik</h1>
-            <p class="mt-2 text-gray-600">Kelola program akademik sekolah</p>
-        </div>
-
-        <!-- Messages -->
-        <?php if ($message): ?>
-            <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-                <?php echo $message; ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if ($error): ?>
-            <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                <?php echo $error; ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if ($action === 'list'): ?>
-            <!-- Action Buttons -->
-            <div class="mb-6 flex justify-between items-center">
-                <a href="?action=create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Tambah Program Baru
-                </a>
-                <a href="index.php" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    Kembali ke Dashboard
-                </a>
-            </div>
-
-            <!-- Search and Filter -->
-            <div class="mb-6 bg-white p-4 rounded-lg shadow">
-                <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="space-y-6">
+    <?php if ($error): ?>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <strong class="font-bold">Error!</strong>
+        <span class="block sm:inline"><?php echo $error; ?></span>
+    </div>
+    <?php endif; ?>
+                <!-- Header Actions -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Pencarian</label>
-                        <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" 
-                               placeholder="Cari program..." 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <h2 class="text-2xl font-bold text-gray-900">Program Akademik</h2>
+                        <p class="text-gray-600">Kelola program akademik sekolah</p>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Tingkat Kelas</label>
-                        <select name="grade_level" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Semua Tingkat</option>
-                            <?php foreach (['1', '2', '3', '4', '5', '6', 'semua'] as $grade): ?>
-                                <option value="<?php echo $grade; ?>" <?php echo $grade_level_filter === $grade ? 'selected' : ''; ?>>
-                                    <?php echo $academic->getGradeLevelName($grade); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Kurikulum</label>
-                        <select name="curriculum_type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Semua Kurikulum</option>
-                            <?php foreach (['nasional', 'internasional', 'muatan_lokal'] as $curriculum): ?>
-                                <option value="<?php echo $curriculum; ?>" <?php echo $curriculum_filter === $curriculum ? 'selected' : ''; ?>>
-                                    <?php echo $academic->getCurriculumTypeName($curriculum); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">
-                            Filter
+                    <div class="mt-4 sm:mt-0 flex space-x-3">
+                        <button onclick="openCreateModal()" class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Tambah Program
                         </button>
-                        <a href="academic.php" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                            Reset
+                        <a href="index.php" class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i>Kembali
                         </a>
                     </div>
-                </form>
-            </div>
-
-            <!-- Programs Table -->
-            <div class="bg-white shadow overflow-hidden sm:rounded-md">
-                <div class="px-4 py-5 sm:px-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                        Daftar Program Akademik (<?php echo $total_programs; ?> program)
-                    </h3>
                 </div>
+
+                <!-- Search and Filter -->
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Pencarian</label>
+                            <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" 
+                                   placeholder="Cari program..." 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tingkat Kelas</label>
+                            <select name="grade_level" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <option value="">Semua Tingkat</option>
+                                <?php foreach (['1', '2', '3', '4', '5', '6', 'semua'] as $grade): ?>
+                                    <option value="<?php echo $grade; ?>" <?php echo $grade_level_filter === $grade ? 'selected' : ''; ?>>
+                                        <?php echo $academic->getGradeLevelName($grade); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Kurikulum</label>
+                            <select name="curriculum_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <option value="">Semua Kurikulum</option>
+                                <?php foreach (['nasional', 'internasional', 'muatan_lokal'] as $curriculum): ?>
+                                    <option value="<?php echo $curriculum; ?>" <?php echo $curriculum_filter === $curriculum ? 'selected' : ''; ?>>
+                                        <?php echo $academic->getCurriculumTypeName($curriculum); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="flex items-end space-x-2">
+                            <button type="submit" class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                            <a href="academic.php" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium rounded-lg transition-colors">
+                                Reset
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Programs List -->
+                <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            Daftar Program Akademik (<?php echo $total_programs; ?> program)
+                        </h3>
+                    </div>
                 
                 <?php if (empty($programs)): ?>
                     <div class="text-center py-8">
@@ -283,7 +323,7 @@ require_once 'includes/admin_header.php';
                                                 <?php if (strlen($program['description']) > 150): ?>...<?php endif; ?>
                                             </p>
                                             <div class="flex space-x-4 mt-2">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-50 text-primary-700">
                                                     <?php echo $academic->getGradeLevelName($program['grade_level']); ?>
                                                 </span>
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -296,14 +336,14 @@ require_once 'includes/admin_header.php';
                                         </div>
                                     </div>
                                     <div class="flex space-x-2">
-                                        <a href="?action=edit&id=<?php echo $program['id']; ?>" 
-                                           class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-3 rounded text-sm">
-                                            Edit
-                                        </a>
-                                        <a href="?action=delete&id=<?php echo $program['id']; ?>" 
+                                        <button onclick="openEditModal(<?php echo $program['id']; ?>)" 
+                                           class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-3 rounded-lg text-sm transition-colors">
+                                            <i class="fas fa-edit mr-1"></i> Edit
+                                        </button>
+                                        <a href="?action=delete&id=<?php echo $program['id']; ?>&csrf_token=<?php echo $_SESSION['csrf_token']; ?>" 
                                            onclick="return confirm('Apakah Anda yakin ingin menghapus program ini?')"
-                                           class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-3 rounded text-sm">
-                                            Hapus
+                                           class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-3 rounded-lg text-sm transition-colors">
+                                            <i class="fas fa-trash mr-1"></i> Hapus
                                         </a>
                                     </div>
                                 </div>
@@ -327,7 +367,7 @@ require_once 'includes/admin_header.php';
                             
                             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                                 <a href="?page=<?php echo $i; ?>&search=<?php echo urlencode($search); ?>&grade_level=<?php echo urlencode($grade_level_filter); ?>&curriculum_type=<?php echo urlencode($curriculum_filter); ?>" 
-                                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <?php echo $i === $page ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:bg-gray-50'; ?>">
+                                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium <?php echo $i === $page ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:bg-gray-50'; ?>">
                                     <?php echo $i; ?>
                                 </a>
                             <?php endfor; ?>
@@ -342,131 +382,9 @@ require_once 'includes/admin_header.php';
                     </div>
                 </div>
             <?php endif; ?>
-
-        <?php elseif ($action === 'create' || $action === 'edit'): ?>
             
-            <!-- Form -->
-            <div class="bg-white shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
-                        <?php echo $action === 'create' ? 'Tambah Program Baru' : 'Edit Program'; ?>
-                    </h3>
-                    
-                    <form method="POST" enctype="multipart/form-data" class="space-y-6">
-                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                        <input type="hidden" name="action" value="<?php echo $action; ?>">
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Judul Program *</label>
-                            <input type="text" name="title" 
-                                   value="<?php echo htmlspecialchars($program_data['title'] ?? ''); ?>" 
-                                   required
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Deskripsi *</label>
-                            <textarea name="description" rows="4" required
-                                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"><?php echo htmlspecialchars($program_data['description'] ?? ''); ?></textarea>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Tingkat Kelas *</label>
-                                <select name="grade_level" required
-                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">Pilih Tingkat Kelas</option>
-                                    <?php foreach (['1', '2', '3', '4', '5', '6', 'semua'] as $grade): ?>
-                                        <option value="<?php echo $grade; ?>" 
-                                                <?php echo ($program_data['grade_level'] ?? '') === $grade ? 'selected' : ''; ?>>
-                                            <?php echo $academic->getGradeLevelName($grade); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Jenis Kurikulum</label>
-                                <select name="curriculum_type"
-                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                                    <option value="">Pilih Kurikulum</option>
-                                    <?php foreach (['nasional', 'internasional', 'muatan_lokal'] as $curriculum): ?>
-                                        <option value="<?php echo $curriculum; ?>" 
-                                                <?php echo ($program_data['curriculum_type'] ?? '') === $curriculum ? 'selected' : ''; ?>>
-                                            <?php echo $academic->getCurriculumTypeName($curriculum); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Mata Pelajaran</label>
-                            <textarea name="subjects" rows="3" 
-                                      placeholder='Contoh: ["Matematika", "Bahasa Indonesia", "IPA", "IPS"]'
-                                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"><?php echo htmlspecialchars($program_data['subjects'] ?? ''); ?></textarea>
-                            <p class="mt-1 text-sm text-gray-500">Format JSON array. Contoh: ["Matematika", "Bahasa Indonesia"]</p>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Metode Pembelajaran</label>
-                            <textarea name="learning_methods" rows="3" 
-                                      placeholder='Contoh: ["Ceramah", "Diskusi", "Praktikum", "Project Based Learning"]'
-                                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"><?php echo htmlspecialchars($program_data['learning_methods'] ?? ''); ?></textarea>
-                            <p class="mt-1 text-sm text-gray-500">Format JSON array. Contoh: ["Ceramah", "Diskusi"]</p>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Metode Penilaian</label>
-                            <textarea name="assessment_methods" rows="3" 
-                                      placeholder='Contoh: ["Ujian Tulis", "Ujian Lisan", "Tugas", "Portofolio"]'
-                                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"><?php echo htmlspecialchars($program_data['assessment_methods'] ?? ''); ?></textarea>
-                            <p class="mt-1 text-sm text-gray-500">Format JSON array. Contoh: ["Ujian Tulis", "Tugas"]</p>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Gambar Program</label>
-                            <input type="file" name="image" accept="image/*"
-                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                            <?php if (!empty($program_data['image'])): ?>
-                                <div class="mt-2">
-                                    <img src="<?php echo htmlspecialchars($program_data['image']); ?>" 
-                                         alt="Current image" class="h-32 w-auto rounded">
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Urutan Tampilan</label>
-                                <input type="number" name="sort_order" min="0"
-                                       value="<?php echo htmlspecialchars($program_data['sort_order'] ?? 0); ?>"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                            </div>
-                            
-                            <div class="flex items-center">
-                                <input type="checkbox" name="is_active" value="1" 
-                                       <?php echo ($program_data['is_active'] ?? 1) ? 'checked' : ''; ?>
-                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                                <label class="ml-2 block text-sm text-gray-900">Program Aktif</label>
-                            </div>
-                        </div>
-                        
-                        <div class="flex justify-end space-x-3">
-                            <a href="academic.php" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
-                                Batal
-                            </a>
-                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                <?php echo $action === 'create' ? 'Tambah Program' : 'Update Program'; ?>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
-        <?php endif; ?>
-        
     </div>
 </div>
 
+<?php include 'includes/academic_modals.php'; ?>
 <?php include 'includes/admin_footer.php'; ?>

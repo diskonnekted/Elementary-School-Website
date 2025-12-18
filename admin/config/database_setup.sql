@@ -1,6 +1,6 @@
--- Database setup untuk SD Cerdas Ceria
-CREATE DATABASE IF NOT EXISTS sd_cerdas_ceria;
-USE sd_cerdas_ceria;
+-- Database setup untuk SD Integra IV
+CREATE DATABASE IF NOT EXISTS sd_integra_iv;
+USE sd_integra_iv;
 
 -- Tabel untuk admin users
 CREATE TABLE IF NOT EXISTS admin_users (
@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS admin_users (
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
-    role ENUM('super_admin', 'admin', 'editor') DEFAULT 'editor',
+    role VARCHAR(50) NOT NULL,
+    subject VARCHAR(255) NULL,
     is_active BOOLEAN DEFAULT TRUE,
     last_login TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -146,15 +147,15 @@ CREATE TABLE IF NOT EXISTS contact_messages (
 
 -- Insert default admin user (password: admin123)
 INSERT INTO admin_users (username, email, password, full_name, role) VALUES 
-('admin', 'admin@sdcerdasceria.sch.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administrator', 'super_admin');
+('admin', 'admin@sdintegraiv.sch.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administrator', 'super_admin');
 
 -- Insert default site settings
 INSERT INTO site_settings (setting_key, setting_value, setting_type, description, is_public) VALUES 
-('site_name', 'SD Cerdas Ceria', 'text', 'Nama sekolah', true),
+('site_name', 'SD Integra IV', 'text', 'Nama sekolah', true),
 ('site_tagline', 'Membentuk Generasi Cerdas Untuk Masa Depan Cerah', 'text', 'Tagline sekolah', true),
 ('school_address', 'Jl. Pendidikan Raya No. 123, Jakarta Selatan', 'text', 'Alamat sekolah', true),
 ('school_phone', '(021) 12345678', 'text', 'Nomor telepon sekolah', true),
-('school_email', 'info@sdcerdasceria.sch.id', 'text', 'Email sekolah', true),
+('school_email', 'info@sdintegraiv.sch.id', 'text', 'Email sekolah', true),
 ('school_founded', '2009', 'text', 'Tahun berdiri', true),
 ('total_students', '500', 'number', 'Jumlah siswa aktif', true),
 ('total_teachers', '25', 'number', 'Jumlah guru', true),
@@ -166,7 +167,7 @@ INSERT INTO site_settings (setting_key, setting_value, setting_type, description
 
 -- Sample data untuk testing
 INSERT INTO news (title, slug, content, excerpt, category, status, author_id, is_featured, published_at) VALUES 
-('Prestasi Siswa dalam Olimpiade Matematika', 'prestasi-olimpiade-matematika-2024', 'Siswa-siswa SD Cerdas Ceria berhasil meraih prestasi membanggakan dalam Olimpiade Matematika tingkat kota...', 'Prestasi membanggakan siswa dalam kompetisi matematika', 'prestasi', 'published', 1, true, NOW()),
+('Prestasi Siswa dalam Olimpiade Matematika', 'prestasi-olimpiade-matematika-2024', 'Siswa-siswa SD Integra IV berhasil meraih prestasi membanggakan dalam Olimpiade Matematika tingkat kota...', 'Prestasi membanggakan siswa dalam kompetisi matematika', 'prestasi', 'published', 1, true, NOW()),
 ('Kegiatan Belajar Mengajar Semester Baru', 'kegiatan-belajar-semester-baru', 'Semester baru telah dimulai dengan semangat dan antusiasme tinggi dari seluruh siswa...', 'Dimulainya aktivitas pembelajaran semester baru', 'kegiatan', 'published', 1, false, NOW());
 
 INSERT INTO academic_programs (title, description, grade_level, curriculum_type, subjects, learning_methods, is_active) VALUES 
@@ -176,3 +177,14 @@ INSERT INTO academic_programs (title, description, grade_level, curriculum_type,
 INSERT INTO innovations (title, description, category, implementation_year, benefits, features, is_featured, is_active) VALUES 
 ('Smart Classroom Technology', 'Ruang kelas pintar dengan teknologi interaktif terdepan', 'teknologi', 2023, '["Pembelajaran lebih interaktif", "Meningkatkan engagement siswa", "Efisiensi waktu belajar"]', '["Interactive Whiteboard", "Tablet untuk setiap siswa", "Real-time Assessment"]', true, true),
 ('Metode pembelajaran STEAM', 'Pendekatan pembelajaran Science, Technology, Engineering, Arts, and Mathematics', 'metode', 2022, '["Mengembangkan kreativitas", "Problem solving skills", "Kolaborasi tim"]', '["Project Based Learning", "Hands-on Activities", "Cross-curricular Integration"]', true, true);
+CREATE TABLE IF NOT EXISTS teacher_profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    subject VARCHAR(255) NULL,
+    photo_filename VARCHAR(255) NULL,
+    bio TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_user (user_id),
+    FOREIGN KEY (user_id) REFERENCES admin_users(id) ON DELETE CASCADE
+);

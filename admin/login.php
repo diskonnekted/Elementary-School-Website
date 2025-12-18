@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - SD Cerdas Ceria</title>
+    <title>Login Admin - SD Integra IV</title>
     <?php include '../includes/favicon.php'; ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <i class="fas fa-graduation-cap text-white text-2xl"></i>
             </div>
             <h1 class="text-2xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
-            <p class="text-gray-600">SD Cerdas Ceria</p>
+            <p class="text-gray-600">SD Integra IV</p>
         </div>
 
         <!-- Alert Error -->
@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Footer -->
         <div class="text-center mt-6 text-xs text-gray-500">
-            © 2024 SD Cerdas Ceria. All rights reserved.
+            © 2024 SD Integra IV. All rights reserved.
         </div>
     </div>
 

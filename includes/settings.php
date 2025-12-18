@@ -64,14 +64,14 @@ class Settings {
      */
     public static function getSchoolInfo() {
         return [
-            'name' => self::get('school_name', 'SD Cerdas Ceria'),
+            'name' => self::get('school_name', 'SD Integra IV'),
             'address' => self::get('school_address', 'Jl. Pendidikan No. 123, Jakarta'),
             'phone' => self::get('school_phone', '(021) 12345678'),
-            'email' => self::get('school_email', 'info@sdcerdasceria.sch.id'),
+            'email' => self::get('school_email', 'info@sdintegraiv.sch.id'),
             'description' => self::get('school_description', 'Membentuk generasi cerdas dan berkarakter untuk masa depan Indonesia yang lebih baik.'),
             'motto' => self::get('school_motto', 'Cerdas, Berkarakter, dan Berintegritas'),
             'logo' => self::get('school_logo', ''),
-            'website' => self::get('school_website', 'https://sdcerdasceria.sch.id'),
+            'website' => self::get('school_website', 'https://sdintegraiv.sch.id'),
             'principal_name' => self::get('principal_name', 'Kepala Sekolah'),
             'principal_photo' => self::get('principal_photo', ''),
             'established_year' => self::get('established_year', '2010'),
@@ -91,7 +91,7 @@ class Settings {
         return [
             'address' => self::get('school_address', 'Jl. Pendidikan No. 123, Jakarta'),
             'phone' => self::get('school_phone', '(021) 12345678'),
-            'email' => self::get('school_email', 'info@sdcerdasceria.sch.id'),
+            'email' => self::get('school_email', 'info@sdintegraiv.sch.id'),
             'operating_hours' => 'Senin - Jumat: 07:00 - 16:00'
         ];
     }

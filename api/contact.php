@@ -89,10 +89,13 @@ try {
         $input['name'],
         $input['email'], 
         $input['phone'] ?? '',
-        $input['subject'],
+        $input['subject'] ?? 'Pesan Baru', // Subject might be empty for teacher contact
         $input['message'],
         $ip_address,
-        $user_agent
+        $user_agent,
+        $input['recipient_type'] ?? 'general',
+        $input['recipient_id'] ?? null,
+        $input['student_name'] ?? null
     );
 
     if ($result['success']) {
@@ -127,10 +130,10 @@ function sendNotificationEmail($name, $email, $subject, $message) {
     // You can implement email sending here using PHPMailer or similar
     // This is just a placeholder for the functionality
     
-    $to = 'admin@sdcerdasceria.sch.id';
+    $to = 'admin@sdintegraiv.sch.id';
     $emailSubject = 'Pesan Baru dari Website: ' . $subject;
     $emailBody = "
-        Pesan baru dari website SD Cerdas Ceria:
+        Pesan baru dari website SD Integra IV:
         
         Nama: $name
         Email: $email
@@ -145,7 +148,7 @@ function sendNotificationEmail($name, $email, $subject, $message) {
     ";
     
     $headers = [
-        'From: noreply@sdcerdasceria.sch.id',
+        'From: noreply@sdintegraiv.sch.id',
         'Reply-To: ' . $email,
         'X-Mailer: PHP/' . phpversion(),
         'Content-Type: text/plain; charset=UTF-8'

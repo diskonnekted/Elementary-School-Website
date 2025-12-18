@@ -5,18 +5,8 @@ $page_title = 'Beranda';
 $school_info = getSchoolInfo();
 $contact_info = getContactInfo();
 $social_media = getSocialMedia();
-?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($school_info['name']); ?> - Sekolah Dasar Modern</title>
-    <?php include 'includes/favicon.php'; ?>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+$body_class = 'font-inter bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100';
+$extra_head = <<<EOT
     <script>
         tailwind.config = {
             theme: {
@@ -70,113 +60,12 @@ $social_media = getSocialMedia();
             0% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
             100% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.8); }
         }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
         .text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
-        .hover-lift:hover { transform: translateY(-5px); transition: all 0.3s ease; }
     </style>
-</head>
-<body class="font-inter bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-    <!-- Modern Navigation -->
-    <nav class="fixed top-0 w-full z-50 transition-all duration-300" id="navbar">
-        <div class="glass-effect">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-20">
-                    <!-- Logo -->
-                    <div class="flex items-center space-x-3 animate-fade-in-up">
-                        <div class="relative">
-                            <?php if (!empty($school_info['logo'])): ?>
-                                <img src="admin/uploads/<?php echo htmlspecialchars($school_info['logo']); ?>" alt="Logo" class="w-12 h-12 rounded-2xl shadow-lg object-cover bg-white p-1">
-                            <?php else: ?>
-                                <div class="w-12 h-12 bg-gradient-to-r from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center shadow-lg animate-pulse-glow">
-                                    <i class="fas fa-graduation-cap text-white text-xl"></i>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                        <div>
-                            <h1 class="text-xl font-bold text-white">
-                                <?php echo htmlspecialchars($school_info['name']); ?>
-                            </h1>
-                            <p class="text-xs text-gray-200 font-medium">Modern Education</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Desktop Menu -->
-                    <div class="hidden lg:flex items-center space-x-1">
-                        <a href="index.php" class="nav-link px-4 py-2 rounded-full text-sm font-semibold bg-primary-500 text-white shadow-lg hover:bg-primary-600 transition-all duration-300 hover-lift">
-                            Beranda
-                        </a>
-                        <a href="profil.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300">
-                            Profil
-                        </a>
-                        <a href="berita.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300">
-                            Berita
-                        </a>
-                        <a href="academic.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300">
-                            Akademik
-                        </a>
-                        <div class="relative group">
-                            <a href="info.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300 flex items-center">
-                                Info <i class="fas fa-chevron-down ml-1 text-xs"></i>
-                            </a>
-                            <div class="absolute top-full left-0 mt-2 w-48 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                                <a href="info.php" class="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-t-2xl transition-all duration-300">
-                                    <i class="fas fa-info-circle mr-2"></i>Informasi Umum
-                                </a>
-                                <a href="transparansi.php" class="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-b-2xl transition-all duration-300">
-                                    <i class="fas fa-balance-scale mr-2"></i>Transparansi
-                                </a>
-                            </div>
-                        </div>
-                        <a href="inovasi.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300">
-                            Inovasi
-                        </a>
-                        <a href="contact.php" class="nav-link px-4 py-2 rounded-full text-sm font-medium text-gray-100 hover:bg-white/20 hover:text-white transition-all duration-300">
-                            Kontak
-                        </a>
-                    </div>
-                    
-                    <!-- Mobile Menu Button -->
-                    <button class="lg:hidden p-2 rounded-full hover:bg-white/20 transition-all duration-300 text-white" id="mobile-menu-button">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Mobile Menu -->
-            <div class="lg:hidden bg-white/95 backdrop-blur-md border-t border-white/20 hidden" id="mobile-menu">
-                <div class="px-4 py-6 space-y-3">
-                    <a href="index.php" class="block px-4 py-3 rounded-2xl text-sm font-semibold bg-primary-500 text-white text-center">
-                        Beranda
-                    </a>
-                    <a href="profil.php" class="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-700 hover:bg-primary-50 transition-all duration-300">
-                        Profil
-                    </a>
-                    <a href="berita.php" class="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-700 hover:bg-primary-50 transition-all duration-300">
-                        Berita
-                    </a>
-                    <a href="academic.php" class="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-700 hover:bg-primary-50 transition-all duration-300">
-                        Akademik
-                    </a>
-                    <a href="info.php" class="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-700 hover:bg-primary-50 transition-all duration-300">
-                        Informasi Umum
-                    </a>
-                    <a href="transparansi.php" class="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-700 hover:bg-primary-50 transition-all duration-300">
-                        Transparansi
-                    </a>
-                    <a href="inovasi.php" class="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-700 hover:bg-primary-50 transition-all duration-300">
-                        Inovasi
-                    </a>
-                    <a href="contact.php" class="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-700 hover:bg-primary-50 transition-all duration-300">
-                        Kontak
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
+EOT;
+
+include 'includes/header.php';
+?>
 
     <!-- Modern Hero Section -->
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
@@ -510,68 +399,6 @@ $social_media = getSocialMedia();
     <?php include 'includes/footer.php'; ?>
 
     <script>
-        // Navbar scroll effect
-        const navbar = document.getElementById('navbar');
-        const glassEffect = navbar.querySelector('.glass-effect');
-        const navLinks = navbar.querySelectorAll('.nav-link:not(.bg-primary-500)');
-        const logoText = navbar.querySelector('h1');
-        const logoSubtext = navbar.querySelector('p');
-        const mobileMenuBtnIcon = navbar.querySelector('#mobile-menu-button i');
-
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 20) {
-                // Scrolled state
-                glassEffect.style.background = 'rgba(255, 255, 255, 0.95)';
-                glassEffect.style.borderBottom = '1px solid rgba(0, 0, 0, 0.05)';
-                glassEffect.classList.add('shadow-md');
-                
-                // Change text colors to dark
-                logoText.classList.remove('text-white');
-                logoText.classList.add('text-gray-800');
-                
-                logoSubtext.classList.remove('text-gray-200');
-                logoSubtext.classList.add('text-gray-500');
-                
-                mobileMenuBtnIcon.classList.remove('text-white');
-                mobileMenuBtnIcon.classList.add('text-gray-800');
-
-                navLinks.forEach(link => {
-                    link.classList.remove('text-gray-100', 'hover:bg-white/20', 'hover:text-white');
-                    link.classList.add('text-gray-700', 'hover:bg-primary-50', 'hover:text-primary-600');
-                });
-            } else {
-                // Top state
-                glassEffect.style.background = 'rgba(255, 255, 255, 0.1)';
-                glassEffect.style.borderBottom = '1px solid rgba(255, 255, 255, 0.2)';
-                glassEffect.classList.remove('shadow-md');
-                
-                // Change text colors back to light
-                logoText.classList.remove('text-gray-800');
-                logoText.classList.add('text-white');
-                
-                logoSubtext.classList.remove('text-gray-500');
-                logoSubtext.classList.add('text-gray-200');
-                
-                mobileMenuBtnIcon.classList.remove('text-gray-800');
-                mobileMenuBtnIcon.classList.add('text-white');
-
-                navLinks.forEach(link => {
-                    link.classList.remove('text-gray-700', 'hover:bg-primary-50', 'hover:text-primary-600');
-                    link.classList.add('text-gray-100', 'hover:bg-white/20', 'hover:text-white');
-                });
-            }
-        });
-
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-        }
-        
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {

@@ -21,27 +21,136 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     switch ($action) {
         case 'create':
+            $roleIn = isset($_POST['role']) ? strtolower(trim($_POST['role'])) : '';
+            $allowedRoles = ['super_admin','admin','guru','staf','demo'];
+            $cleanRole = in_array($roleIn, $allowedRoles) ? $roleIn : 'guru';
             $result = $userModel->create(
                 $_POST['username'],
                 $_POST['email'],
                 $_POST['password'],
                 $_POST['full_name'],
-                $_POST['role'],
+                $cleanRole,
                 $current_user['id']
             );
+            // Save subject to admin_users and teacher_profiles if provided
+            if (($result['success'] ?? false)) {
+                $targetId = $result['id'];
+                $subject = $_POST['subject'] ?? '';
+                $bio = $_POST['bio'] ?? '';
+                $education = $_POST['education'] ?? '';
+                $achievements = $_POST['achievements'] ?? '';
+                $certificates = $_POST['certificates'] ?? '';
+                $training = $_POST['training'] ?? '';
+                $photoFilename = null;
+
+                // Handle Photo Upload
+                if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+                    $uploadDir = __DIR__ . '/uploads/teachers/';
+                    if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
+                    
+                    $fileInfo = pathinfo($_FILES['photo']['name']);
+                    $extension = strtolower($fileInfo['extension']);
+                    $allowed = ['jpg', 'jpeg', 'png'];
+                    
+                    if (in_array($extension, $allowed)) {
+                        if ($_FILES['photo']['size'] <= 2 * 1024 * 1024) { // 2MB
+                             $newFilename = $targetId . '.' . $extension;
+                             $targetPath = $uploadDir . $newFilename;
+                             
+                             // Remove old files
+                             array_map('unlink', glob($uploadDir . $targetId . '.*'));
+                             
+                             if (move_uploaded_file($_FILES['photo']['tmp_name'], $targetPath)) {
+                                 $photoFilename = $newFilename;
+                             }
+                        }
+                    }
+                }
+
+                if (!empty($subject)) {
+                    try {
+                        // Try update subject column in admin_users
+                        $stmt = $db->prepare("UPDATE admin_users SET subject = ? WHERE id = ?");
+                        $stmt->execute([$subject, $targetId]);
+                    } catch (Exception $e) {}
+                }
+                
+                try {
+                    // Upsert into teacher_profiles
+                    // First check if record exists to decide on photo_filename
+                    $stmt = $db->prepare("INSERT INTO teacher_profiles (user_id, subject, bio, education, achievements, certificates, training, photo_filename) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE subject = VALUES(subject), bio = VALUES(bio), education = VALUES(education), achievements = VALUES(achievements), certificates = VALUES(certificates), training = VALUES(training)" . ($photoFilename ? ", photo_filename = VALUES(photo_filename)" : ""));
+                    $params = [$targetId, $subject, $bio, $education, $achievements, $certificates, $training, $photoFilename];
+                    $stmt->execute($params);
+                } catch (Exception $e) {}
+            }
             Auth::setFlashMessage($result['success'] ? 'success' : 'error', $result['message']);
             break;
             
         case 'update':
+            $roleIn = isset($_POST['role']) ? strtolower(trim($_POST['role'])) : '';
+            $allowedRoles = ['super_admin','admin','guru','staf','demo'];
+            $cleanRole = in_array($roleIn, $allowedRoles) ? $roleIn : 'guru';
             $result = $userModel->update(
                 $_POST['user_id'],
                 $_POST['username'],
                 $_POST['email'],
                 $_POST['full_name'],
-                $_POST['role'],
+                $cleanRole,
                 $_POST['status'],
                 $current_user['id']
             );
+            
+            // Save additional info
+            $targetId = $_POST['user_id'];
+            $subject = $_POST['subject'] ?? '';
+            $bio = $_POST['bio'] ?? '';
+            $education = $_POST['education'] ?? '';
+            $achievements = $_POST['achievements'] ?? '';
+            $certificates = $_POST['certificates'] ?? '';
+            $training = $_POST['training'] ?? '';
+            $photoFilename = null;
+
+            // Handle Photo Upload
+            if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = __DIR__ . '/uploads/teachers/';
+                if (!file_exists($uploadDir)) mkdir($uploadDir, 0777, true);
+                
+                $fileInfo = pathinfo($_FILES['photo']['name']);
+                $extension = strtolower($fileInfo['extension']);
+                $allowed = ['jpg', 'jpeg', 'png'];
+                
+                if (in_array($extension, $allowed)) {
+                    if ($_FILES['photo']['size'] <= 2 * 1024 * 1024) { // 2MB
+                            $newFilename = $targetId . '.' . $extension;
+                            $targetPath = $uploadDir . $newFilename;
+                            
+                            // Remove old files
+                            array_map('unlink', glob($uploadDir . $targetId . '.*'));
+                            
+                            if (move_uploaded_file($_FILES['photo']['tmp_name'], $targetPath)) {
+                                $photoFilename = $newFilename;
+                            }
+                    }
+                }
+            }
+
+            if (!empty($subject)) {
+                try {
+                    $stmt = $db->prepare("UPDATE admin_users SET subject = ? WHERE id = ?");
+                    $stmt->execute([$subject, $targetId]);
+                } catch (Exception $e) {}
+            }
+
+            try {
+                // Upsert into teacher_profiles
+                $query = "INSERT INTO teacher_profiles (user_id, subject, bio, education, achievements, certificates, training, photo_filename) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE subject = VALUES(subject), bio = VALUES(bio), education = VALUES(education), achievements = VALUES(achievements), certificates = VALUES(certificates), training = VALUES(training)";
+                if ($photoFilename) {
+                    $query .= ", photo_filename = VALUES(photo_filename)";
+                }
+                $stmt = $db->prepare($query);
+                $stmt->execute([$targetId, $subject, $bio, $education, $achievements, $certificates, $training, $photoFilename]);
+            } catch (Exception $e) {}
+
             Auth::setFlashMessage($result['success'] ? 'success' : 'error', $result['message']);
             break;
             
@@ -227,7 +336,10 @@ $page_title = 'User Management';
                     <?php if (!Auth::isReadOnly()): ?>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div class="flex space-x-2">
-                            <button onclick="openEditModal(<?= $user['id'] ?>)" class="text-indigo-600 hover:text-indigo-900">
+                            <button onclick="openInfoModal(<?= $user['id'] ?>)" class="text-blue-600 hover:text-blue-900" title="Detail Info">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                            <button onclick="openEditModal(<?= $user['id'] ?>)" class="text-indigo-600 hover:text-indigo-900" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button onclick="openPasswordModal(<?= $user['id'] ?>)" class="text-yellow-600 hover:text-yellow-900">
@@ -279,16 +391,49 @@ $page_title = 'User Management';
         }
 
         function openEditModal(userId) {
-            fetch(`users.php?action=get_user&id=${userId}`)
-                .then(response => response.json())
+            fetch(`users.php?action=get_user&id=${userId}`, { credentials: 'include' })
+                .then(r => {
+                    const ct = r.headers.get('content-type') || '';
+                    if (!r.ok) throw new Error('http');
+                    if (!ct.includes('application/json')) throw new Error('not-json');
+                    return r.json();
+                })
                 .then(user => {
-                    document.getElementById('edit_user_id').value = user.id;
-                    document.getElementById('edit_username').value = user.username;
-                    document.getElementById('edit_email').value = user.email;
-                    document.getElementById('edit_full_name').value = user.full_name;
-                    document.getElementById('edit_role').value = user.role;
-                    document.getElementById('edit_status').value = user.status;
+                    if (!user || !user.id) return;
+                    document.getElementById('edit_user_id').value = user.id || '';
+                    document.getElementById('edit_username').value = user.username || '';
+                    document.getElementById('edit_email').value = user.email || '';
+                    document.getElementById('edit_full_name').value = user.full_name || '';
+                    document.getElementById('edit_role').value = user.role || 'demo';
+                    var st = user.status;
+                    if (st !== 'active' && st !== 'inactive' && st !== 'suspended') {
+                        st = (user.is_active == 1 ? 'active' : 'suspended');
+                    }
+                    document.getElementById('edit_status').value = st;
+                    
+                    // Populate optional fields
+                    const subjectField = document.getElementById('edit_subject');
+                    if (subjectField) subjectField.value = user.subject || '';
+                    
+                    const bioField = document.getElementById('edit_bio');
+                    if (bioField) bioField.value = user.bio || '';
+
+                    const educationField = document.getElementById('edit_education');
+                    if (educationField) educationField.value = user.education || '';
+
+                    const achievementsField = document.getElementById('edit_achievements');
+                    if (achievementsField) achievementsField.value = user.achievements || '';
+
+                    const certificatesField = document.getElementById('edit_certificates');
+                    if (certificatesField) certificatesField.value = user.certificates || '';
+
+                    const trainingField = document.getElementById('edit_training');
+                    if (trainingField) trainingField.value = user.training || '';
+                    
                     document.getElementById('editModal').classList.remove('hidden');
+                })
+                .catch((err) => {
+                    alert('Gagal memuat data user.');
                 });
         }
 
@@ -303,6 +448,74 @@ $page_title = 'User Management';
 
         function closePasswordModal() {
             document.getElementById('passwordModal').classList.add('hidden');
+        }
+
+        function openInfoModal(userId) {
+            fetch(`users.php?action=get_user&id=${userId}`, { credentials: 'include' })
+                .then(r => {
+                    const ct = r.headers.get('content-type') || '';
+                    if (!r.ok) throw new Error('http');
+                    if (!ct.includes('application/json')) throw new Error('not-json');
+                    return r.json();
+                })
+                .then(user => {
+                    if (!user || !user.id) return;
+                    
+                    // Populate Basic Info
+                    document.getElementById('info_username').textContent = '@' + user.username;
+                    document.getElementById('info_full_name').textContent = user.full_name;
+                    document.getElementById('info_email').textContent = user.email;
+                    
+                    // Role Badge
+                    const roleEl = document.getElementById('info_role');
+                    roleEl.textContent = user.role.toUpperCase();
+                    roleEl.className = 'px-2 py-1 text-xs font-semibold rounded-full ' + getRoleColorClass(user.role);
+                    
+                    // Status Badge
+                    const statusEl = document.getElementById('info_status');
+                    var st = user.status;
+                    if (st !== 'active' && st !== 'inactive' && st !== 'suspended') {
+                        st = (user.is_active == 1 ? 'active' : 'suspended');
+                    }
+                    statusEl.textContent = st.charAt(0).toUpperCase() + st.slice(1);
+                    statusEl.className = 'px-2 py-1 text-xs font-semibold rounded-full ' + (st === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800');
+
+                    // Photo
+                    const photoEl = document.getElementById('info_photo');
+                    if (user.photo_filename) {
+                        photoEl.src = 'uploads/teachers/' + user.photo_filename;
+                    } else {
+                        photoEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&background=random`;
+                    }
+
+                    // Populate Additional Info
+                    document.getElementById('info_subject').textContent = user.subject || '-';
+                    document.getElementById('info_bio').textContent = user.bio || '-';
+                    document.getElementById('info_education').textContent = user.education || '-';
+                    document.getElementById('info_achievements').textContent = user.achievements || '-';
+                    document.getElementById('info_certificates').textContent = user.certificates || '-';
+                    document.getElementById('info_training').textContent = user.training || '-';
+                    
+                    document.getElementById('infoModal').classList.remove('hidden');
+                })
+                .catch((err) => {
+                    console.error(err);
+                    alert('Gagal memuat data user.');
+                });
+        }
+
+        function closeInfoModal() {
+            document.getElementById('infoModal').classList.add('hidden');
+        }
+
+        function getRoleColorClass(role) {
+            switch(role) {
+                case 'super_admin': return 'bg-purple-100 text-purple-800';
+                case 'admin': return 'bg-blue-100 text-blue-800';
+                case 'guru': return 'bg-green-100 text-green-800';
+                case 'staf': return 'bg-yellow-100 text-yellow-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
         }
 
         function confirmDelete(userId, username) {

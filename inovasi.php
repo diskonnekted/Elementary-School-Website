@@ -36,18 +36,27 @@ try {
     $items = [];
 }
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inovasi Pembelajaran - <?php echo htmlspecialchars($school_info['name']); ?></title>
-    <?php include 'includes/favicon.php'; ?>
-
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
+<?php $page_title = 'Inovasi Pembelajaran'; ?>
+<?php include 'includes/header.php'; ?>
+<style>
+        .page-header {
+            background: url('admin/uploads/innovations/innovation_1765965935_6942806f66e2c.jpeg') no-repeat center center/cover !important;
+            position: relative;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(30, 41, 59, 0.8); /* Dark blue-gray overlay */
+            z-index: 1;
+        }
+        .page-header .container {
+            position: relative;
+            z-index: 2;
+        }
         .section { padding: 80px 0; }
         .filter-bar { background: #f8f9fa; padding: 20px 0; }
         .filters { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: center; }
@@ -76,37 +85,7 @@ try {
         .modal .inner { background:#fff; margin: 5% auto; border-radius: 14px; max-width: 960px; max-height:80vh; overflow:auto; padding: 22px; }
         @media (max-width: 768px){ .filters{flex-direction:column; align-items: stretch;} .grid{ grid-template-columns: 1fr; } .modal .inner{ margin: 8% 16px; } }
     </style>
-</head>
-<body>
-    <!-- Header & Navigation -->
-    <header class="header">
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span><?php echo htmlspecialchars($school_info['name']); ?></span>
-                </div>
-                <ul class="nav-menu">
-                    <li class="nav-item"><a href="index.php" class="nav-link">Beranda</a></li>
-                    <li class="nav-item"><a href="profil.php" class="nav-link">Profil</a></li>
-                    <li class="nav-item"><a href="berita.php" class="nav-link">Berita</a></li>
-                    <li class="nav-item"><a href="academic.php" class="nav-link">Akademik</a></li>
-                    <li class="nav-item dropdown">
-                        <a href="info.php" class="nav-link dropdown-toggle">Info</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="info.php">Informasi Umum</a></li>
-                            <li><a href="transparansi.php">Transparansi</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item"><a href="inovasi.php" class="nav-link active">Inovasi</a></li>
-                    <li class="nav-item"><a href="contact.php" class="nav-link">Kontak</a></li>
-                </ul>
-                <div class="hamburger">
-                    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-                </div>
-            </div>
-        </nav>
-    </header>
+
 
     <!-- Page Header -->
     <section class="page-header">

@@ -50,7 +50,7 @@ try {
                     'subjects' => $academic->formatJsonArray($program['subjects']),
                     'learning_methods' => $academic->formatJsonArray($program['learning_methods']),
                     'assessment_methods' => $academic->formatJsonArray($program['assessment_methods']),
-                    'image' => $program['image'] ? '/admin/uploads/' . $program['image'] : null,
+                    'image' => $program['image'] ? '/admin/' . $program['image'] : null,
                     'sort_order' => (int)$program['sort_order'],
                     'created_at' => $program['created_at']
                 ];
@@ -123,7 +123,7 @@ try {
                     'subjects' => $academic->formatJsonArray($program['subjects']),
                     'learning_methods' => $academic->formatJsonArray($program['learning_methods']),
                     'assessment_methods' => $academic->formatJsonArray($program['assessment_methods']),
-                    'image' => $program['image'] ? '../admin/' . $program['image'] : null,
+                    'image' => $program['image'] ? '/admin/' . $program['image'] : null,
                     'sort_order' => (int)$program['sort_order'],
                     'created_at' => $program['created_at']
                 ];
@@ -159,7 +159,7 @@ try {
                     'subjects' => $academic->formatJsonArray($program['subjects']),
                     'learning_methods' => $academic->formatJsonArray($program['learning_methods']),
                     'assessment_methods' => $academic->formatJsonArray($program['assessment_methods']),
-                    'image' => $program['image'] ? '../admin/' . $program['image'] : null,
+                    'image' => $program['image'] ? '/admin/' . $program['image'] : null,
                     'sort_order' => (int)$program['sort_order'],
                     'created_at' => $program['created_at']
                 ];

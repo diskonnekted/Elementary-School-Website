@@ -9,6 +9,7 @@ class Auth {
     const ROLE_SUPERADMIN = 'super_admin';
     const ROLE_ADMIN = 'admin';
     const ROLE_GURU = 'guru';
+    const ROLE_STAF = 'staf';
     const ROLE_DEMO = 'demo';
 
     public static function isLoggedIn() {
@@ -139,10 +140,14 @@ class Auth {
     }
 
     public static function getRoleBadge($role) {
+        $role = strtolower(trim((string)$role));
+        if ($role === 'superadmin') $role = 'super_admin';
+        if ($role === '') $role = 'guru';
         $badges = [
             'super_admin' => '<span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Super Admin</span>',
             'admin' => '<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Admin</span>',
             'guru' => '<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Guru</span>',
+            'staf' => '<span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Staf</span>',
             'demo' => '<span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Demo</span>'
         ];
 

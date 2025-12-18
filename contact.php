@@ -7,76 +7,19 @@ $school_info = getSchoolInfo();
 $contact_info = getContactInfo();
 
 // Set page title
-$page_title = "Hubungi Kami - " . $school_info['name'];
+$page_title = 'Hubungi Kami';
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($page_title); ?></title>
-    <?php include 'includes/favicon.php'; ?>
-
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="bg-gray-50">
-    <!-- Header & Navigation -->
-    <header class="header sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <i class="fas fa-graduation-cap text-2xl text-blue-600"></i>
-                    <span class="text-xl font-bold"><?php echo htmlspecialchars($school_info['name']); ?></span>
-                </div>
-                
-                <ul class="nav-menu">
-                    <li class="nav-item"><a href="index.php" class="nav-link">Beranda</a></li>
-                    <li class="nav-item"><a href="profil.php" class="nav-link">Profil</a></li>
-                    <li class="nav-item"><a href="berita.php" class="nav-link">Berita</a></li>
-                    <li class="nav-item"><a href="academic.php" class="nav-link">Akademik</a></li>
-                    <li class="nav-item dropdown">
-                        <a href="info.php" class="nav-link dropdown-toggle">Info</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="info.php">Informasi Umum</a></li>
-                            <li><a href="transparansi.php">Transparansi</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item"><a href="inovasi.php" class="nav-link">Inovasi</a></li>
-                    <li class="nav-item"><a href="contact.php" class="nav-link active">Kontak</a></li>
-                </ul>
-                
-                <div class="hamburger">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
-            </div>
-        </nav>
-    </header>
+<?php include 'includes/header.php'; ?>
+<!-- Leaflet CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    // Restore body background class
+    document.body.classList.add('bg-gray-50');
+</script>
 
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-800 py-20 overflow-hidden">
+    <section class="relative bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-800 pt-32 pb-20 overflow-hidden">
         <div class="absolute inset-0 bg-black/20"></div>
         <div class="absolute inset-0">
             <div class="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
@@ -251,7 +194,7 @@ $page_title = "Hubungi Kami - " . $school_info['name'];
                                     </div>
                                     <div class="ml-3">
                                         <p class="font-semibold text-gray-900">Facebook</p>
-                                        <p class="text-sm text-gray-600">@SDCerdasCeria</p>
+                                        <p class="text-sm text-gray-600">@SDIntegraIV</p>
                                     </div>
                                 </a>
                                 
@@ -261,7 +204,7 @@ $page_title = "Hubungi Kami - " . $school_info['name'];
                                     </div>
                                     <div class="ml-3">
                                         <p class="font-semibold text-gray-900">Instagram</p>
-                                        <p class="text-sm text-gray-600">@sdcerdasceria</p>
+                                        <p class="text-sm text-gray-600">@sdintegraiv</p>
                                     </div>
                                 </a>
                                 
@@ -271,7 +214,7 @@ $page_title = "Hubungi Kami - " . $school_info['name'];
                                     </div>
                                     <div class="ml-3">
                                         <p class="font-semibold text-gray-900">Twitter</p>
-                                        <p class="text-sm text-gray-600">@SDCerdasCeria</p>
+                                        <p class="text-sm text-gray-600">@SDIntegraIV</p>
                                     </div>
                                 </a>
                                 
@@ -281,7 +224,7 @@ $page_title = "Hubungi Kami - " . $school_info['name'];
                                     </div>
                                     <div class="ml-3">
                                         <p class="font-semibold text-gray-900">YouTube</p>
-                                        <p class="text-sm text-gray-600">SD Cerdas Ceria</p>
+                                        <p class="text-sm text-gray-600">SD Integra IV</p>
                                     </div>
                                 </a>
                             </div>
@@ -317,7 +260,7 @@ $page_title = "Hubungi Kami - " . $school_info['name'];
         }).addTo(map);
 
         L.marker([schoolLat, schoolLng]).addTo(map)
-            .bindPopup('<div class="text-center"><b>SD Cerdas Ceria</b><br>Jl. Pendidikan No. 123, Jakarta</div>')
+            .bindPopup('<div class="text-center"><b>SD Integra IV</b><br>Jl. Pendidikan No. 123, Jakarta</div>')
             .openPopup();
     });
 

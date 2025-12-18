@@ -14,7 +14,7 @@ $page_title = $page_title ?? 'Dashboard';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($page_title) ?> - Admin SD Cerdas Ceria</title>
+    <title><?= htmlspecialchars($page_title) ?> - Admin SD Integra IV</title>
     <?php include '../includes/favicon.php'; ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -62,7 +62,7 @@ $page_title = $page_title ?? 'Dashboard';
                             <i class="fas fa-graduation-cap text-white"></i>
                         </div>
                         <div class="ml-3">
-                            <h2 class="text-lg font-semibold text-gray-900">SD Cerdas Ceria</h2>
+                            <h2 class="text-lg font-semibold text-gray-900">SD Integra IV</h2>
                             <p class="text-sm text-gray-500">Admin Panel</p>
                         </div>
                     </div>
@@ -101,6 +101,13 @@ $page_title = $page_title ?? 'Dashboard';
                             </a>
                         </li>
                         <?php endif; ?>
+
+                        <li>
+                            <a href="ppdb.php" class="flex items-center px-3 py-2 text-sm font-medium text-gray-900 rounded-lg hover:bg-gray-100 <?= basename($_SERVER['PHP_SELF']) == 'ppdb.php' ? 'bg-primary-50 text-primary-700 border-r-2 border-primary-500' : '' ?>">
+                                <i class="fas fa-user-plus mr-3 text-gray-400"></i>
+                                Data PPDB
+                            </a>
+                        </li>
 
                         <?php if (Auth::canEditContent()): ?>
                         <li>
