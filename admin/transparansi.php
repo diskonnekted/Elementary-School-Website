@@ -152,176 +152,177 @@ include 'includes/admin_header.php';
 ?>
 
 <!-- Transparansi Management Content -->
-<div class="max-w-7xl mx-auto">
+<div class="space-y-6">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">Kelola Transparansi</h2>
+            <p class="text-gray-600">Kelola informasi transparansi dan akuntabilitas sekolah</p>
+        </div>
+        <div class="mt-4 sm:mt-0">
+            <button onclick="toggleModal('addModal')" 
+                    class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors">
+                <i class="fas fa-plus mr-2"></i>
+                Tambah Data Transparansi
+            </button>
+        </div>
+    </div>
+
+    <!-- Message -->
+    <?php if ($message): ?>
+    <div class="p-4 rounded-lg <?php echo $messageType === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'; ?>">
+        <p class="<?php echo $messageType === 'success' ? 'text-green-700' : 'text-red-700'; ?>">
+            <?php echo htmlspecialchars($message); ?>
+        </p>
+    </div>
+    <?php endif; ?>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <?php
+        $categoryNames = [
+            'financial' => ['name' => 'Laporan Keuangan', 'icon' => '💰', 'color' => 'blue'],
+            'budget' => ['name' => 'Anggaran Sekolah', 'icon' => '📊', 'color' => 'green'],
+            'governance' => ['name' => 'Tata Kelola', 'icon' => '🏛️', 'color' => 'purple'],
+            'reports' => ['name' => 'Laporan Berkala', 'icon' => '📋', 'color' => 'yellow'],
+            'policies' => ['name' => 'Kebijakan', 'icon' => '📜', 'color' => 'indigo'],
+            'procurement' => ['name' => 'Pengadaan', 'icon' => '🛒', 'color' => 'pink'],
+            'other' => ['name' => 'Lainnya', 'icon' => '📄', 'color' => 'gray']
+        ];
+        
+        $totalItems = $stats['total'] ?? 0;
+        ?>
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Total Data</p>
+                    <p class="text-2xl font-bold text-gray-900"><?php echo $totalItems; ?></p>
+                </div>
+                <div class="text-3xl">📊</div>
+            </div>
+        </div>
+        
+        <?php if (isset($stats['by_section']) && is_array($stats['by_section'])): ?>
+            <?php $sectionCount = 0; ?>
+            <?php foreach ($stats['by_section'] as $section => $count): ?>
+                <?php if ($sectionCount >= 3) break; ?>
+                <?php $category = $categoryNames[$section] ?? ['name' => $section, 'icon' => '📄', 'color' => 'gray']; ?>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600"><?php echo $category['name']; ?></p>
+                            <p class="text-2xl font-bold text-gray-900"><?php echo $count; ?></p>
+                        </div>
+                        <div class="text-3xl"><?php echo $category['icon']; ?></div>
+                    </div>
+                </div>
+                <?php $sectionCount++; ?>
+            <?php endforeach; ?>
+            
+            <?php while ($sectionCount < 3): ?>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <div class="flex items-center justify-between">
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Kelola Transparansi</h1>
-                        <p class="text-gray-600 mt-2">Kelola informasi transparansi dan akuntabilitas sekolah</p>
+                        <p class="text-sm font-medium text-gray-600">Aktif</p>
+                        <p class="text-2xl font-bold text-gray-900"><?php echo $stats['active'] ?? 0; ?></p>
                     </div>
-                    <button onclick="toggleModal('addModal')" 
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        Tambah Data Transparansi
-                    </button>
+                    <div class="text-3xl">✅</div>
                 </div>
+            </div>
+            <?php $sectionCount++; break; ?>
+            <?php endwhile; ?>
+        <?php endif; ?>
+    </div>
 
-                <!-- Message -->
-                <?php if ($message): ?>
-                <div class="mb-6 p-4 rounded-lg <?php echo $messageType === 'success' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'; ?>">
-                    <p class="<?php echo $messageType === 'success' ? 'text-green-700' : 'text-red-700'; ?>">
-                        <?php echo htmlspecialchars($message); ?>
-                    </p>
-                </div>
-                <?php endif; ?>
-
-                <!-- Statistics Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <?php
-                    $categoryNames = [
-                        'financial' => ['name' => 'Laporan Keuangan', 'icon' => '💰', 'color' => 'blue'],
-                        'budget' => ['name' => 'Anggaran Sekolah', 'icon' => '📊', 'color' => 'green'],
-                        'governance' => ['name' => 'Tata Kelola', 'icon' => '🏛️', 'color' => 'purple'],
-                        'reports' => ['name' => 'Laporan Berkala', 'icon' => '📋', 'color' => 'yellow'],
-                        'policies' => ['name' => 'Kebijakan', 'icon' => '📜', 'color' => 'indigo'],
-                        'procurement' => ['name' => 'Pengadaan', 'icon' => '🛒', 'color' => 'pink'],
-                        'other' => ['name' => 'Lainnya', 'icon' => '📄', 'color' => 'gray']
-                    ];
-                    
-                    $totalItems = $stats['total'] ?? 0;
-                    ?>
-                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">Total Data</p>
-                                <p class="text-2xl font-bold text-gray-900"><?php echo $totalItems; ?></p>
-                            </div>
-                            <div class="text-3xl">📊</div>
-                        </div>
-                    </div>
-                    
-                    <?php if (isset($stats['by_section']) && is_array($stats['by_section'])): ?>
-                        <?php $sectionCount = 0; ?>
-                        <?php foreach ($stats['by_section'] as $section => $count): ?>
-                            <?php if ($sectionCount >= 3) break; ?>
-                            <?php $category = $categoryNames[$section] ?? ['name' => $section, 'icon' => '📄', 'color' => 'gray']; ?>
-                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-600"><?php echo $category['name']; ?></p>
-                                        <p class="text-2xl font-bold text-gray-900"><?php echo $count; ?></p>
-                                    </div>
-                                    <div class="text-3xl"><?php echo $category['icon']; ?></div>
+    <!-- Data Table -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Urutan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <?php if (empty($transparencies)): ?>
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            <i class="fas fa-folder-open text-4xl mb-4 text-gray-300"></i>
+                            <p>Belum ada data transparansi</p>
+                        </td>
+                    </tr>
+                    <?php else: ?>
+                        <?php foreach ($transparencies as $item): ?>
+                        <?php 
+                        $category = $categoryNames[$item['section_type']] ?? ['name' => $item['section_type'], 'icon' => '📄', 'color' => 'gray'];
+                        ?>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <span class="text-lg mr-2"><?php echo $category['icon']; ?></span>
+                                    <span class="text-sm font-medium text-gray-900">
+                                        <?php echo htmlspecialchars($category['name']); ?>
+                                    </span>
                                 </div>
-                            </div>
-                            <?php $sectionCount++; ?>
-                        <?php endforeach; ?>
-                        
-                        <?php while ($sectionCount < 3): ?>
-                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-600">Aktif</p>
-                                    <p class="text-2xl font-bold text-gray-900"><?php echo $stats['active'] ?? 0; ?></p>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900">
+                                    <?php echo htmlspecialchars(substr($item['title'], 0, 50)); ?>
+                                    <?php if (strlen($item['title']) > 50) echo '...'; ?>
                                 </div>
-                                <div class="text-3xl">✅</div>
-                            </div>
-                        </div>
-                        <?php $sectionCount++; break; ?>
-                        <?php endwhile; ?>
-                    <?php endif; ?>
-                </div>
-
-                <!-- Data Table -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-                    <div class="px-6 py-4 border-b border-gray-200">
-                        <h2 class="text-lg font-semibold text-gray-900">Data Transparansi</h2>
-                    </div>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Urutan</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <?php if (empty($transparencies)): ?>
-                                <tr>
-                                    <td colspan="7" class="px-6 py-8 text-center text-gray-500">
-                                        Belum ada data transparansi
-                                    </td>
-                                </tr>
+                                <div class="text-sm text-gray-500">
+                                    <?php echo htmlspecialchars(substr(strip_tags($item['content']), 0, 80)); ?>
+                                    <?php if (strlen(strip_tags($item['content'])) > 80) echo '...'; ?>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <?php if ($item['file_attachment']): ?>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <i class="fas fa-paperclip mr-1"></i> File
+                                    </span>
                                 <?php else: ?>
-                                    <?php foreach ($transparencies as $item): ?>
-                                    <?php 
-                                    $category = $categoryNames[$item['section_type']] ?? ['name' => $item['section_type'], 'icon' => '📄', 'color' => 'gray'];
-                                    ?>
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <span class="text-lg mr-2"><?php echo $category['icon']; ?></span>
-                                                <span class="text-sm font-medium text-gray-900">
-                                                    <?php echo htmlspecialchars($category['name']); ?>
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="text-sm font-medium text-gray-900">
-                                                <?php echo htmlspecialchars(substr($item['title'], 0, 50)); ?>
-                                                <?php if (strlen($item['title']) > 50) echo '...'; ?>
-                                            </div>
-                                            <div class="text-sm text-gray-500">
-                                                <?php echo htmlspecialchars(substr(strip_tags($item['content']), 0, 80)); ?>
-                                                <?php if (strlen(strip_tags($item['content'])) > 80) echo '...'; ?>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <?php if ($item['file_attachment']): ?>
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                    📎 Ada File
-                                                </span>
-                                            <?php else: ?>
-                                                <span class="text-gray-400">-</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <?php echo $item['is_active'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
-                                                <?php echo $item['is_active'] ? '✅ Aktif' : '❌ Nonaktif'; ?>
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                            <?php echo $item['sort_order']; ?>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                            <button onclick="editItem(<?php echo htmlspecialchars(json_encode($item)); ?>)"
-                                                    class="text-indigo-600 hover:text-indigo-900">Edit</button>
-                                            <a href="?action=toggle&id=<?php echo $item['id']; ?>" 
-                                               class="text-yellow-600 hover:text-yellow-900">
-                                                <?php echo $item['is_active'] ? 'Nonaktifkan' : 'Aktifkan'; ?>
-                                            </a>
-                                            <a href="?action=delete&id=<?php echo $item['id']; ?>" 
-                                               onclick="return confirm('Yakin ingin menghapus data ini?')"
-                                               class="text-red-600 hover:text-red-900">Hapus</a>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
+                                    <span class="text-gray-400">-</span>
                                 <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium <?php echo $item['is_active'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
+                                    <?php echo $item['is_active'] ? 'Published' : 'Draft'; ?>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                <?php echo $item['sort_order']; ?>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <?php echo date('d/m/Y', strtotime($item['created_at'])); ?>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                <button onclick="editItem(<?php echo htmlspecialchars(json_encode($item)); ?>)"
+                                        class="text-primary-600 hover:text-primary-900" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <a href="?action=toggle&id=<?php echo $item['id']; ?>" 
+                                   class="text-yellow-600 hover:text-yellow-900" title="<?php echo $item['is_active'] ? 'Nonaktifkan' : 'Aktifkan'; ?>">
+                                    <i class="fas <?php echo $item['is_active'] ? 'fa-eye-slash' : 'fa-eye'; ?>"></i>
+                                </a>
+                                <a href="?action=delete&id=<?php echo $item['id']; ?>" 
+                                   onclick="return confirm('Yakin ingin menghapus data ini?')"
+                                   class="text-red-600 hover:text-red-900" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <?php include 'includes/admin_footer.php'; ?>

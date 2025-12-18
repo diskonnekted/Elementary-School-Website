@@ -19,27 +19,41 @@ $page_title = 'Hubungi Kami';
 </script>
 
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-800 pt-32 pb-20 overflow-hidden">
-        <div class="absolute inset-0 bg-black/20"></div>
-        <div class="absolute inset-0">
+    <section class="relative pt-32 pb-20 overflow-hidden">
+        <!-- Background Image & Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="images/sch2.jpg" alt="Background" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-900/90 via-blue-900/90 to-indigo-900/90"></div>
+        </div>
+
+        <!-- Decorative Elements -->
+        <div class="absolute inset-0 z-0">
             <div class="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
             <div class="absolute top-40 right-20 w-32 h-32 bg-purple-300/20 rounded-full blur-2xl"></div>
             <div class="absolute bottom-20 left-1/3 w-24 h-24 bg-blue-300/20 rounded-full blur-xl"></div>
         </div>
         
-        <div class="relative container text-center text-white z-10">
-            <div class="mb-6">
-                <span class="inline-flex items-center bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                    <i class="fas fa-phone mr-2"></i>
-                    Hubungi Kami
-                </span>
+        <div class="relative container mx-auto px-4 z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="w-full lg:w-1/2 text-center lg:text-left text-white">
+                    <div class="mb-6 flex justify-center lg:justify-start">
+                        <span class="inline-flex items-center bg-white/20 backdrop-blur px-4 py-2 rounded-full text-sm font-semibold">
+                            <i class="fas fa-phone mr-2"></i>
+                            Hubungi Kami
+                        </span>
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                        Kontak <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300">& Lokasi</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl opacity-90 mb-10">
+                        Kami siap membantu dan menjawab pertanyaan Anda. Jangan ragu untuk menghubungi kami!
+                    </p>
+                </div>
+                
+                <div class="w-full lg:w-1/2 mt-8 lg:mt-0 flex justify-center lg:justify-end">
+                    <img src="upload/humas.png" alt="Tim Humas" class="w-auto max-h-[400px] lg:max-h-[500px] object-contain -mb-20 lg:-mb-32 relative z-0">
+                </div>
             </div>
-            <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                Kontak <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300">& Lokasi</span>
-            </h1>
-            <p class="text-xl md:text-2xl opacity-90 mb-10 max-w-3xl mx-auto">
-                Kami siap membantu dan menjawab pertanyaan Anda. Jangan ragu untuk menghubungi kami!
-            </p>
         </div>
         
         <!-- Wave separator -->
@@ -151,6 +165,31 @@ $page_title = 'Hubungi Kami';
                         <div id="error" class="mt-6 p-4 bg-red-100 border border-red-300 rounded-xl text-red-700 hidden">
                             <i class="fas fa-exclamation-triangle mr-2"></i>Terjadi kesalahan. Silakan coba lagi.
                         </div>
+
+                        <!-- Form Instructions -->
+                        <div class="mt-8 pt-8 border-t border-gray-100">
+                            <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                <i class="fas fa-info-circle text-blue-500 mr-2"></i>Petunjuk Pengisian
+                            </h4>
+                            <ul class="space-y-3 text-sm text-gray-600">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>Pastikan alamat email yang Anda masukkan valid agar kami dapat membalas pesan Anda.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>Gunakan bahasa yang sopan dan jelas dalam menyampaikan pesan.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>Kami berusaha membalas setiap pesan dalam waktu 1x24 jam pada hari kerja.</span>
+                                </li>
+                            </ul>
+                            <div class="mt-6 p-3 bg-gray-50 rounded-lg text-xs text-gray-500 flex items-start">
+                                <i class="fas fa-shield-alt text-gray-400 mt-0.5 mr-2"></i>
+                                <p>Privasi Anda terjaga. Informasi kontak Anda tidak akan dibagikan kepada pihak ketiga tanpa persetujuan Anda.</p>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Office Hours & Social Media -->
@@ -188,43 +227,43 @@ $page_title = 'Hubungi Kami';
                                 <i class="fas fa-share-alt mr-3 text-green-500"></i>Media Sosial
                             </h3>
                             <div class="grid grid-cols-2 gap-4">
-                                <a href="#" class="flex items-center p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors group">
-                                    <div class="bg-blue-500 p-3 rounded-full group-hover:scale-110 transition-transform">
-                                        <i class="fab fa-facebook-f text-white"></i>
+                                <a href="#" class="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-3xl aspect-square hover:bg-blue-100 transition-all duration-300 group text-center hover:-translate-y-1">
+                                    <div class="bg-blue-600 w-12 h-12 flex items-center justify-center rounded-full mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                                        <i class="fab fa-facebook-f text-white text-xl"></i>
                                     </div>
-                                    <div class="ml-3">
-                                        <p class="font-semibold text-gray-900">Facebook</p>
-                                        <p class="text-sm text-gray-600">@SDIntegraIV</p>
-                                    </div>
-                                </a>
-                                
-                                <a href="#" class="flex items-center p-4 bg-pink-50 rounded-xl hover:bg-pink-100 transition-colors group">
-                                    <div class="bg-pink-500 p-3 rounded-full group-hover:scale-110 transition-transform">
-                                        <i class="fab fa-instagram text-white"></i>
-                                    </div>
-                                    <div class="ml-3">
-                                        <p class="font-semibold text-gray-900">Instagram</p>
-                                        <p class="text-sm text-gray-600">@sdintegraiv</p>
+                                    <div class="w-full">
+                                        <p class="font-bold text-gray-900 text-sm mb-1">Facebook</p>
+                                        <p class="text-xs text-gray-600 truncate px-2">@SDIntegralIV</p>
                                     </div>
                                 </a>
                                 
-                                <a href="#" class="flex items-center p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors group">
-                                    <div class="bg-blue-400 p-3 rounded-full group-hover:scale-110 transition-transform">
-                                        <i class="fab fa-twitter text-white"></i>
+                                <a href="#" class="flex flex-col items-center justify-center p-4 bg-pink-50 rounded-3xl aspect-square hover:bg-pink-100 transition-all duration-300 group text-center hover:-translate-y-1">
+                                    <div class="bg-pink-600 w-12 h-12 flex items-center justify-center rounded-full mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                                        <i class="fab fa-instagram text-white text-xl"></i>
                                     </div>
-                                    <div class="ml-3">
-                                        <p class="font-semibold text-gray-900">Twitter</p>
-                                        <p class="text-sm text-gray-600">@SDIntegraIV</p>
+                                    <div class="w-full">
+                                        <p class="font-bold text-gray-900 text-sm mb-1">Instagram</p>
+                                        <p class="text-xs text-gray-600 truncate px-2">@sdintegraiv</p>
                                     </div>
                                 </a>
                                 
-                                <a href="#" class="flex items-center p-4 bg-red-50 rounded-xl hover:bg-red-100 transition-colors group">
-                                    <div class="bg-red-500 p-3 rounded-full group-hover:scale-110 transition-transform">
-                                        <i class="fab fa-youtube text-white"></i>
+                                <a href="#" class="flex flex-col items-center justify-center p-4 bg-sky-50 rounded-3xl aspect-square hover:bg-sky-100 transition-all duration-300 group text-center hover:-translate-y-1">
+                                    <div class="bg-sky-500 w-12 h-12 flex items-center justify-center rounded-full mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                                        <i class="fab fa-twitter text-white text-xl"></i>
                                     </div>
-                                    <div class="ml-3">
-                                        <p class="font-semibold text-gray-900">YouTube</p>
-                                        <p class="text-sm text-gray-600">SD Integra IV</p>
+                                    <div class="w-full">
+                                        <p class="font-bold text-gray-900 text-sm mb-1">Twitter</p>
+                                        <p class="text-xs text-gray-600 truncate px-2">@SDIntegralIV</p>
+                                    </div>
+                                </a>
+                                
+                                <a href="#" class="flex flex-col items-center justify-center p-4 bg-red-50 rounded-3xl aspect-square hover:bg-red-100 transition-all duration-300 group text-center hover:-translate-y-1">
+                                    <div class="bg-red-600 w-12 h-12 flex items-center justify-center rounded-full mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                                        <i class="fab fa-youtube text-white text-xl"></i>
+                                    </div>
+                                    <div class="w-full">
+                                        <p class="font-bold text-gray-900 text-sm mb-1">YouTube</p>
+                                        <p class="text-xs text-gray-600 truncate px-2">SD Integra IV</p>
                                     </div>
                                 </a>
                             </div>

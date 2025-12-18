@@ -136,36 +136,82 @@ try {
     </section>
 
     <!-- Statistics Overview -->
-    <section class="py-12 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">Ringkasan Transparansi</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Komitmen kami untuk memberikan informasi yang terbuka dan dapat dipertanggungjawabkan</p>
+    <section class="py-16 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-gray-50 to-white -z-10"></div>
+        <!-- Decorative blobs -->
+        <div class="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+        <div class="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold mb-4 tracking-wide uppercase">Statistik & Kinerja</span>
+                <h2 class="text-4xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight">
+                    Ringkasan <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Transparansi</span>
+                </h2>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+                    Komitmen kami untuk memberikan informasi yang terbuka, akurat, dan dapat dipertanggungjawabkan kepada publik.
+                </p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="text-center p-6 bg-blue-50 rounded-lg">
-                    <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-file-alt text-blue-600 text-2xl"></i>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Card 1 -->
+                <div class="group relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-blue-50 rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 transform group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-file-alt text-2xl"></i>
+                            </div>
+                            <span class="text-blue-100 bg-blue-50 px-3 py-1 rounded-full text-xs font-bold text-blue-600">
+                                Updated
+                            </span>
+                        </div>
+                        <h3 class="text-5xl font-extrabold text-gray-900 mb-2 tracking-tight group-hover:text-blue-600 transition-colors">
+                            <?php echo $stats['active'] ?? 0; ?>
+                        </h3>
+                        <p class="text-gray-500 font-medium text-lg group-hover:text-gray-700">Dokumen Aktif</p>
                     </div>
-                    <h3 class="text-2xl font-bold text-blue-900 mb-2"><?php echo $stats['active'] ?? 0; ?></h3>
-                    <p class="text-blue-700">Dokumen Aktif</p>
                 </div>
                 
-                <div class="text-center p-6 bg-green-50 rounded-lg">
-                    <div class="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-chart-line text-green-600 text-2xl"></i>
+                <!-- Card 2 -->
+                <div class="group relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-emerald-50 rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-500/30 transform group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-layer-group text-2xl"></i>
+                            </div>
+                            <span class="text-emerald-100 bg-emerald-50 px-3 py-1 rounded-full text-xs font-bold text-emerald-600">
+                                Terverifikasi
+                            </span>
+                        </div>
+                        <h3 class="text-5xl font-extrabold text-gray-900 mb-2 tracking-tight group-hover:text-emerald-600 transition-colors">
+                            <?php echo count($section_info); ?>
+                        </h3>
+                        <p class="text-gray-500 font-medium text-lg group-hover:text-gray-700">Kategori Informasi</p>
                     </div>
-                    <h3 class="text-2xl font-bold text-green-900 mb-2"><?php echo count($section_info); ?></h3>
-                    <p class="text-green-700">Kategori Informasi</p>
                 </div>
                 
-                <div class="text-center p-6 bg-purple-50 rounded-lg">
-                    <div class="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-clock text-purple-600 text-2xl"></i>
+                <!-- Card 3 -->
+                <div class="group relative bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-violet-50 rounded-full blur-2xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-violet-600 text-white flex items-center justify-center shadow-lg shadow-violet-500/30 transform group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-clock text-2xl"></i>
+                            </div>
+                            <span class="text-violet-100 bg-violet-50 px-3 py-1 rounded-full text-xs font-bold text-violet-600">
+                                Online
+                            </span>
+                        </div>
+                        <h3 class="text-5xl font-extrabold text-gray-900 mb-2 tracking-tight group-hover:text-violet-600 transition-colors">
+                            24/7
+                        </h3>
+                        <p class="text-gray-500 font-medium text-lg group-hover:text-gray-700">Akses Publik</p>
                     </div>
-                    <h3 class="text-2xl font-bold text-purple-900 mb-2">24/7</h3>
-                    <p class="text-purple-700">Akses Online</p>
                 </div>
             </div>
         </div>
@@ -276,62 +322,81 @@ try {
             </div>
         </section>
     <?php else: ?>
-        <?php foreach ($grouped_data as $section_type => $items): ?>
-        <?php $info = $section_info[$section_type] ?? ['name' => ucfirst($section_type), 'icon' => 'fas fa-folder', 'color' => '#6b7280']; ?>
-        
-        <section class="py-12 <?php echo array_search($section_type, array_keys($grouped_data)) % 2 === 0 ? 'bg-white' : 'bg-gray-50'; ?>">
+        <?php
+            // Flatten all transparencies into a single grid so cards flow across categories
+            $flat_items = $all_transparencies;
+        ?>
+
+        <section class="py-12 bg-white">
             <div class="container mx-auto px-4">
                 <div class="mb-8">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 mr-4 rounded-lg flex items-center justify-center" style="background-color: <?php echo $info['color']; ?>20;">
-                            <i class="<?php echo $info['icon']; ?> text-2xl" style="color: <?php echo $info['color']; ?>;"></i>
-                        </div>
+                    <div class="flex items-center justify-between">
                         <div>
-                            <h2 class="text-2xl font-bold text-gray-900"><?php echo $info['name']; ?></h2>
-                            <p class="text-gray-600"><?php echo count($items); ?> dokumen tersedia</p>
+                            <h2 class="text-2xl font-bold text-gray-900">Semua Informasi Transparansi</h2>
+                            <p class="text-gray-600">Menampilkan semua dokumen dari berbagai kategori.</p>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <?php foreach ($section_info as $key => $s): ?>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-gray-700 bg-gray-100" style="color: <?php echo $s['color']; ?>;">
+                                    <i class="<?php echo $s['icon']; ?> mr-2"></i><?php echo $s['name']; ?>
+                                </span>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <?php foreach ($items as $item): ?>
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                        <div class="p-6">
-                            <div class="flex justify-between items-start mb-4">
-                                <h3 class="text-lg font-semibold text-gray-900 leading-tight">
-                                    <?php echo htmlspecialchars($item['title']); ?>
-                                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <?php foreach ($flat_items as $item):
+                        $info = $section_info[$item['section_type']] ?? ['name' => ucfirst($item['section_type']), 'icon' => 'fas fa-folder', 'color' => '#6b7280'];
+                    ?>
+                    <div class="group relative bg-white rounded-2xl border border-gray-100 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                        <span class="absolute inset-x-0 top-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity" style="background-color: <?php echo $info['color']; ?>;"></span>
+                        <div class="p-3 md:p-6">
+                            <div class="flex justify-between items-start mb-3 md:mb-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center" style="background-color: <?php echo $info['color']; ?>20; color: <?php echo $info['color']; ?>;">
+                                        <i class="<?php echo $info['icon']; ?> text-sm md:text-base"></i>
+                                    </div>
+                                    <h3 class="text-base md:text-xl font-semibold tracking-tight text-gray-900 leading-snug line-clamp-2 md:line-clamp-3">
+                                        <?php echo htmlspecialchars($item['title']); ?>
+                                    </h3>
+                                </div>
                                 <?php if ($item['file_attachment']): ?>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 ring-1 ring-green-600/10">
                                     <i class="fas fa-paperclip mr-1"></i>File
                                 </span>
                                 <?php endif; ?>
                             </div>
-                            
-                            <div class="text-gray-600 mb-4 line-clamp-3">
+
+                            <div class="text-gray-600 mb-4 md:mb-6 line-clamp-3 text-sm md:text-base">
                                 <?php 
                                 $content_preview = strip_tags($item['content']);
                                 echo htmlspecialchars(strlen($content_preview) > 200 ? substr($content_preview, 0, 200) . '...' : $content_preview);
                                 ?>
                             </div>
-                            
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-500">
-                                    <i class="fas fa-calendar mr-1"></i>
-                                    <?php echo date('d F Y', strtotime($item['created_at'])); ?>
-                                </span>
-                                
-                                <div class="flex space-x-2">
+
+                            <div class="mt-4 md:mt-6 border-t border-gray-100 pt-3 md:pt-4 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full bg-gray-100 text-gray-600 text-[11px] md:text-xs font-medium">
+                                        <i class="fas fa-calendar mr-1"></i>
+                                        <?php echo date('d F Y', strtotime($item['created_at'])); ?>
+                                    </span>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full bg-<?php echo 'white'; ?> text-sm text-gray-700" style="border:1px solid <?php echo $info['color']; ?>20;color:<?php echo $info['color']; ?>;">
+                                        <?php echo $info['name']; ?>
+                                    </span>
+                                </div>
+
+                                <div class="flex items-center gap-2">
                                     <button onclick="viewTransparencyDetail(<?php echo $item['id']; ?>)" 
-                                            class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                        <i class="fas fa-eye mr-1"></i>Lihat Detail
+                                            class="inline-flex items-center px-2.5 py-1.5 md:px-3 md:py-2 rounded-lg text-blue-700 bg-blue-50 hover:bg-blue-100 text-xs md:text-sm font-medium transition-colors shadow-sm">
+                                        <i class="fas fa-eye mr-2"></i>Lihat
                                     </button>
-                                    
+
                                     <?php if ($item['file_attachment']): ?>
                                     <a href="admin/uploads/attachments/<?php echo htmlspecialchars($item['file_attachment']); ?>" 
                                        target="_blank" download
-                                       class="text-green-600 hover:text-green-800 text-sm font-medium">
-                                        <i class="fas fa-download mr-1"></i>Unduh
+                                       class="inline-flex items-center px-2.5 py-1.5 md:px-3 md:py-2 rounded-lg text-green-700 bg-green-50 hover:bg-green-100 text-xs md:text-sm font-medium transition-colors shadow-sm">
+                                        <i class="fas fa-download mr-2"></i>Unduh
                                     </a>
                                     <?php endif; ?>
                                 </div>
@@ -342,7 +407,6 @@ try {
                 </div>
             </div>
         </section>
-        <?php endforeach; ?>
     <?php endif; ?>
 
     <!-- Contact for Transparency -->

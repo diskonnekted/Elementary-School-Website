@@ -66,7 +66,7 @@ class Auth {
         }
     }
 
-    public static function requireRole($required_roles, $redirect_url = '/admin/index.php') {
+    public static function requireRole($required_roles, $redirect_url = 'index.php') {
         self::requireLogin();
         
         $current_role = self::getUserRole();
